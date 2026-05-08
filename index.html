@@ -1,0 +1,766 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Smart Skills | Agente de IA para Atendimento 24h</title>
+<meta name="description" content="Agente de IA que atende seus clientes 24h no WhatsApp. Qualifica leads, agenda consultas, gera cobranças e contratos, sem precisar de nenhum humano presente.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Serif:ital,wght@0,400;0,600;0,700;1,400&family=IBM+Plex+Mono:wght@400;600&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+<style>
+:root {
+  --deep:    #08090F;
+  --navy:    #0E1628;
+  --carbon:  #1C2035;
+  --cyan:    #00D4FF;
+  --violet:  #8B5CF6;
+  --amber:   #F59E0B;
+  --white:   #F4F1EB;
+  --grey:    #6B7280;
+  --hairline:#2A3450;
+  --serif:   'IBM Plex Serif', Georgia, serif;
+  --mono:    'IBM Plex Mono', monospace;
+  --display: 'Instrument Serif', Georgia, serif;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; font-size: 16px; }
+body { background: var(--deep); color: var(--white); font-family: var(--serif); line-height: 1.6; overflow-x: hidden; }
+a { color: inherit; text-decoration: none; }
+
+/* ── NAV ── */
+nav {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+  padding: 0 5%; height: 64px;
+  display: flex; align-items: center; justify-content: space-between;
+  background: rgba(8,9,15,.88); backdrop-filter: blur(16px);
+  border-bottom: 1px solid var(--hairline);
+}
+.nav-logo { display: flex; align-items: center; gap: .75rem; }
+.nav-logo-text { font-family: var(--display); font-size: 1.1rem; letter-spacing: .02em; }
+.nav-logo-text span { color: var(--cyan); }
+.nav-links { display: flex; gap: 2rem; list-style: none; }
+.nav-links a { font-family: var(--mono); font-size: .65rem; color: var(--grey); letter-spacing: .12em; text-transform: uppercase; transition: color .2s; }
+.nav-links a:hover { color: var(--cyan); }
+.nav-cta {
+  font-family: var(--mono); font-size: .7rem; letter-spacing: .1em; text-transform: uppercase;
+  padding: .55rem 1.25rem; border: 1px solid var(--cyan); color: var(--cyan);
+  border-radius: 2px; transition: background .2s, color .2s;
+}
+.nav-cta:hover { background: var(--cyan); color: var(--deep); }
+.nav-hamburger { display: none; flex-direction: column; gap: 5px; cursor: pointer; padding: 4px; }
+.nav-hamburger span { display: block; width: 22px; height: 1.5px; background: var(--white); transition: all .3s; }
+
+/* ── HERO ── */
+#hero {
+  min-height: 100vh; padding: 64px 5% 0;
+  display: grid; grid-template-columns: 1fr 1fr; gap: 4rem; align-items: center;
+  position: relative; overflow: hidden;
+}
+.hero-grid-bg {
+  position: absolute; inset: 0; z-index: 0;
+  background-image:
+    linear-gradient(rgba(0,212,255,.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0,212,255,.04) 1px, transparent 1px);
+  background-size: 48px 48px;
+  mask-image: radial-gradient(ellipse 80% 70% at 50% 50%, black 30%, transparent 100%);
+}
+.hero-content { position: relative; z-index: 1; }
+.hero-tag {
+  display: inline-flex; align-items: center; gap: .5rem;
+  font-family: var(--mono); font-size: .65rem; letter-spacing: .14em; text-transform: uppercase;
+  color: var(--cyan); border: 1px solid rgba(0,212,255,.3);
+  padding: .35rem .85rem; border-radius: 2px; margin-bottom: 1.75rem;
+}
+.hero-tag::before { content: ''; display: block; width: 6px; height: 6px; background: var(--cyan); border-radius: 50%; animation: pulse 2s infinite; }
+@keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:.4;transform:scale(1.3)} }
+h1.hero-title {
+  font-family: var(--display); font-weight: 400; font-size: clamp(2.2rem, 4.5vw, 3.6rem);
+  line-height: 1.05; letter-spacing: -.01em; margin-bottom: 1.5rem;
+}
+h1.hero-title em { font-style: italic; color: var(--cyan); }
+.hero-sub {
+  font-size: 1.05rem; color: rgba(244,241,235,.7); line-height: 1.7;
+  max-width: 480px; margin-bottom: 2.5rem;
+}
+.hero-actions { display: flex; gap: 1rem; align-items: center; flex-wrap: wrap; }
+.btn-primary {
+  display: inline-flex; align-items: center; gap: .6rem;
+  background: var(--cyan); color: var(--deep);
+  font-family: var(--mono); font-size: .75rem; font-weight: 600; letter-spacing: .1em; text-transform: uppercase;
+  padding: .9rem 2rem; border-radius: 2px; transition: opacity .2s, transform .15s;
+}
+.btn-primary:hover { opacity: .9; transform: translateY(-1px); }
+.btn-secondary {
+  display: inline-flex; align-items: center; gap: .5rem;
+  font-family: var(--mono); font-size: .72rem; letter-spacing: .1em; text-transform: uppercase;
+  color: var(--white); opacity: .6; transition: opacity .2s;
+}
+.btn-secondary:hover { opacity: 1; }
+.btn-secondary svg { transition: transform .2s; }
+.btn-secondary:hover svg { transform: translateX(3px); }
+
+/* ── CHAT MOCK ── */
+.hero-visual { position: relative; z-index: 1; display: flex; justify-content: center; align-items: center; padding: 4rem 0; }
+.phone-frame {
+  width: 300px; height: 520px; background: #111827;
+  border-radius: 28px; overflow: hidden;
+  display: flex; flex-direction: column;
+  box-shadow: 0 0 0 1px rgba(255,255,255,.08), 0 40px 80px rgba(0,0,0,.6), 0 0 60px rgba(0,212,255,.08);
+}
+.phone-header {
+  background: #1a2235; padding: .75rem 1rem;
+  display: flex; align-items: center; gap: .75rem;
+  border-bottom: 1px solid rgba(255,255,255,.06);
+}
+.phone-avatar {
+  width: 36px; height: 36px; border-radius: 50%;
+  background: linear-gradient(135deg, var(--cyan), var(--violet));
+  display: flex; align-items: center; justify-content: center;
+  font-family: var(--mono); font-size: .65rem; font-weight: 600; color: var(--deep);
+}
+.phone-info p { font-size: .8rem; font-weight: 600; font-family: var(--serif); }
+.phone-info span { font-size: .65rem; color: #25D366; font-family: var(--mono); }
+.phone-body { padding: 1rem .75rem; flex: 1; overflow-y: hidden; display: flex; flex-direction: column; gap: .6rem; background: #0d1520; }
+.msg { max-width: 80%; padding: .55rem .75rem; border-radius: 8px; font-size: .75rem; line-height: 1.5; font-family: var(--serif); position: relative; }
+.msg-time { font-family: var(--mono); font-size: .55rem; opacity: .45; margin-top: .2rem; text-align: right; }
+.msg.user { background: #1f3a5f; align-self: flex-end; border-bottom-right-radius: 2px; color: #d4e8ff; }
+.msg.agent { background: #1a2a1a; align-self: flex-start; border-bottom-left-radius: 2px; color: #d4f4d4; }
+.msg.agent .agent-name { font-family: var(--mono); font-size: .55rem; color: #25D366; margin-bottom: .2rem; }
+.typing { display: flex; gap: 4px; align-items: center; padding: .65rem .85rem; background: #1a2a1a; border-radius: 8px; border-bottom-left-radius: 2px; align-self: flex-start; }
+.typing span { width: 6px; height: 6px; background: #6b7280; border-radius: 50%; animation: bounce .9s infinite; }
+.typing span:nth-child(2) { animation-delay: .15s; }
+.typing span:nth-child(3) { animation-delay: .3s; }
+@keyframes bounce { 0%,60%,100%{transform:translateY(0)} 30%{transform:translateY(-5px)} }
+.chat-msg { opacity: 0; transform: translateY(8px); transition: opacity .4s ease, transform .4s ease; }
+.chat-msg.show { opacity: 1; transform: none; }
+
+/* ── STATS BAR ── */
+#stats {
+  background: var(--navy); border-top: 1px solid var(--hairline); border-bottom: 1px solid var(--hairline);
+  padding: 2.5rem 5%;
+}
+.stats-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1px; }
+.stat-item { text-align: center; padding: 1rem; border-right: 1px solid var(--hairline); }
+.stat-item:last-child { border-right: none; }
+.stat-num { font-family: var(--display); font-size: 2.4rem; color: var(--cyan); line-height: 1; }
+.stat-label { font-family: var(--mono); font-size: .62rem; color: var(--grey); letter-spacing: .1em; text-transform: uppercase; margin-top: .35rem; }
+
+/* ── SECTIONS ── */
+section { padding: 6rem 5%; }
+.section-label { font-family: var(--mono); font-size: .62rem; color: var(--cyan); letter-spacing: .14em; text-transform: uppercase; margin-bottom: .6rem; }
+.section-rule { height: 1px; background: var(--hairline); margin: .5rem 0 3.5rem; }
+h2.section-title { font-family: var(--display); font-weight: 400; font-size: clamp(1.8rem, 3.5vw, 2.8rem); line-height: 1.1; margin-bottom: 1rem; }
+h2.section-title em { font-style: italic; color: var(--cyan); }
+.section-sub { font-size: 1rem; color: rgba(244,241,235,.65); max-width: 560px; line-height: 1.7; margin-bottom: 3.5rem; }
+
+/* ── BENTO FEATURES ── */
+#features { background: var(--deep); }
+.bento { display: grid; grid-template-columns: repeat(12, 1fr); grid-auto-rows: minmax(180px, auto); gap: 1px; background: var(--hairline); border: 1px solid var(--hairline); border-radius: 4px; overflow: hidden; }
+.bento-card {
+  background: var(--navy); padding: 2rem 2rem 2rem;
+  position: relative; overflow: hidden; transition: background .25s;
+  display: flex; flex-direction: column; justify-content: space-between;
+}
+.bento-card:hover { background: #111d35; }
+.bento-card.span-4 { grid-column: span 4; }
+.bento-card.span-6 { grid-column: span 6; }
+.bento-card.span-8 { grid-column: span 8; }
+.bento-card.span-12 { grid-column: span 12; }
+.bento-card.col-span-5 { grid-column: span 5; }
+.bento-card.col-span-7 { grid-column: span 7; }
+.card-icon {
+  width: 44px; height: 44px; border-radius: 3px;
+  display: flex; align-items: center; justify-content: center; margin-bottom: 1.25rem;
+  flex-shrink: 0;
+}
+.card-icon.cyan { background: rgba(0,212,255,.1); border: 1px solid rgba(0,212,255,.25); }
+.card-icon.violet { background: rgba(139,92,246,.1); border: 1px solid rgba(139,92,246,.25); }
+.card-icon.amber { background: rgba(245,158,11,.1); border: 1px solid rgba(245,158,11,.25); }
+.card-icon.green { background: rgba(16,185,129,.1); border: 1px solid rgba(16,185,129,.25); }
+.card-icon svg { width: 22px; height: 22px; }
+.card-label { font-family: var(--mono); font-size: .6rem; letter-spacing: .12em; text-transform: uppercase; color: var(--grey); margin-bottom: .4rem; }
+.card-title { font-family: var(--display); font-size: 1.3rem; line-height: 1.2; margin-bottom: .75rem; }
+.card-desc { font-size: .88rem; color: rgba(244,241,235,.6); line-height: 1.65; }
+.card-highlight { font-family: var(--mono); font-size: .7rem; color: var(--cyan); letter-spacing: .06em; margin-top: 1rem; }
+.card-deco { position: absolute; right: -20px; bottom: -20px; opacity: .05; pointer-events: none; }
+.media-pills { display: flex; gap: .5rem; flex-wrap: wrap; margin-top: 1rem; }
+.pill {
+  font-family: var(--mono); font-size: .6rem; letter-spacing: .08em; text-transform: uppercase;
+  padding: .3rem .75rem; border-radius: 2px; border: 1px solid;
+}
+.pill.cyan { color: var(--cyan); border-color: rgba(0,212,255,.3); background: rgba(0,212,255,.05); }
+.pill.violet { color: var(--violet); border-color: rgba(139,92,246,.3); background: rgba(139,92,246,.05); }
+.pill.amber { color: var(--amber); border-color: rgba(245,158,11,.3); background: rgba(245,158,11,.05); }
+.pill.green { color: #10b981; border-color: rgba(16,185,129,.3); background: rgba(16,185,129,.05); }
+.integrations-logos { display: flex; gap: 1rem; flex-wrap: wrap; margin-top: 1.25rem; }
+.int-badge {
+  font-family: var(--mono); font-size: .6rem; letter-spacing: .08em;
+  padding: .35rem .8rem; border-radius: 2px; background: var(--carbon); border: 1px solid var(--hairline);
+  color: rgba(244,241,235,.7);
+}
+
+/* ── HOW IT WORKS ── */
+#how { background: var(--navy); }
+.steps { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2rem; }
+.step { position: relative; padding: 2.5rem 2rem; background: var(--carbon); border: 1px solid var(--hairline); border-radius: 3px; transition: border-color .25s; }
+.step:hover { border-color: rgba(0,212,255,.3); }
+.step-num { font-family: var(--display); font-size: 3.5rem; color: rgba(0,212,255,.12); line-height: 1; margin-bottom: 1rem; }
+.step-title { font-family: var(--display); font-size: 1.25rem; margin-bottom: .65rem; }
+.step-desc { font-size: .88rem; color: rgba(244,241,235,.6); line-height: 1.7; }
+.step-connector { display: none; }
+
+/* ── INTEGRATIONS ── */
+#integrations { background: var(--deep); }
+.int-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 1px; background: var(--hairline); border: 1px solid var(--hairline); border-radius: 3px; overflow: hidden; }
+.int-item {
+  background: var(--navy); padding: 1.75rem 1.25rem;
+  display: flex; flex-direction: column; align-items: center; gap: .75rem;
+  transition: background .2s;
+}
+.int-item:hover { background: var(--carbon); }
+.int-icon { width: 40px; height: 40px; border-radius: 8px; display: flex; align-items: center; justify-content: center; }
+.int-name { font-family: var(--mono); font-size: .62rem; letter-spacing: .08em; text-transform: uppercase; color: var(--grey); text-align: center; }
+
+/* ── NICHES ── */
+#niches { background: var(--navy); }
+.niches-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 1px; background: var(--hairline); border: 1px solid var(--hairline); border-radius: 3px; overflow: hidden; }
+.niche-card { background: var(--carbon); padding: 2rem 1.75rem; position: relative; overflow: hidden; transition: background .2s; }
+.niche-card:hover { background: #1a2540; }
+.niche-card.featured { background: rgba(0,212,255,.06); border-left: 3px solid var(--cyan); }
+.niche-badge { font-family: var(--mono); font-size: .55rem; letter-spacing: .1em; text-transform: uppercase; color: var(--amber); border: 1px solid rgba(245,158,11,.3); padding: .2rem .55rem; border-radius: 2px; display: inline-block; margin-bottom: .75rem; }
+.niche-title { font-family: var(--display); font-size: 1.15rem; margin-bottom: .5rem; }
+.niche-pain { font-size: .82rem; color: rgba(244,241,235,.55); line-height: 1.6; }
+.niche-roi { font-family: var(--mono); font-size: .65rem; color: var(--cyan); margin-top: .75rem; }
+
+
+/* ── CTA FINAL ── */
+#cta-final {
+  background: var(--navy); border-top: 1px solid var(--hairline);
+  text-align: center; padding: 7rem 5%;
+}
+#cta-final h2 { font-family: var(--display); font-size: clamp(1.8rem, 3.5vw, 2.8rem); font-weight: 400; max-width: 700px; margin: 0 auto 1.25rem; }
+#cta-final p { color: rgba(244,241,235,.6); font-size: 1rem; margin-bottom: 2.5rem; }
+.cta-actions { display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; }
+.btn-outline {
+  display: inline-flex; align-items: center; gap: .6rem;
+  font-family: var(--mono); font-size: .72rem; letter-spacing: .1em; text-transform: uppercase;
+  padding: .9rem 2rem; border: 1px solid var(--hairline); color: var(--white);
+  border-radius: 2px; transition: border-color .2s;
+}
+.btn-outline:hover { border-color: var(--white); }
+
+/* ── FOOTER ── */
+footer {
+  background: var(--deep); border-top: 1px solid var(--hairline);
+  padding: 3rem 5%; display: grid; grid-template-columns: 1fr auto auto; gap: 3rem; align-items: start;
+}
+.footer-brand { }
+.footer-brand p { font-size: .82rem; color: var(--grey); max-width: 280px; margin-top: .6rem; line-height: 1.6; }
+.footer-col h4 { font-family: var(--mono); font-size: .62rem; letter-spacing: .12em; text-transform: uppercase; color: var(--grey); margin-bottom: 1rem; }
+.footer-col ul { list-style: none; display: flex; flex-direction: column; gap: .55rem; }
+.footer-col ul li a { font-size: .85rem; color: rgba(244,241,235,.6); transition: color .2s; }
+.footer-col ul li a:hover { color: var(--white); }
+.footer-bottom {
+  border-top: 1px solid var(--hairline); padding: 1.25rem 5%;
+  display: flex; justify-content: space-between; align-items: center;
+}
+.footer-bottom p { font-family: var(--mono); font-size: .6rem; color: var(--grey); letter-spacing: .06em; }
+.footer-socials { display: flex; gap: 1rem; }
+.footer-socials { gap: 1.25rem; }
+.footer-socials a { color: var(--grey); display: flex; align-items: center; transition: color .2s; }
+.footer-socials a:hover { color: var(--cyan); }
+
+/* ── WHATSAPP FLOAT ── */
+.wa-float {
+  position: fixed; bottom: 2rem; right: 2rem; z-index: 200;
+  width: 56px; height: 56px; border-radius: 50%;
+  background: #25D366; display: flex; align-items: center; justify-content: center;
+  box-shadow: 0 4px 20px rgba(37,211,102,.4);
+  transition: transform .2s, box-shadow .2s; cursor: pointer;
+}
+.wa-float:hover { transform: scale(1.08); box-shadow: 0 6px 28px rgba(37,211,102,.55); }
+.wa-float svg { width: 28px; height: 28px; fill: white; }
+.wa-float-label {
+  position: absolute; right: 68px; top: 50%; transform: translateY(-50%);
+  background: var(--carbon); border: 1px solid var(--hairline);
+  font-family: var(--mono); font-size: .62rem; letter-spacing: .08em; white-space: nowrap;
+  padding: .4rem .85rem; border-radius: 2px; color: var(--white);
+  opacity: 0; transition: opacity .2s;
+}
+.wa-float:hover .wa-float-label { opacity: 1; }
+
+/* ── REVEAL ── */
+.reveal { opacity: 0; transform: translateY(28px); transition: opacity .7s ease, transform .7s ease; }
+.reveal.visible { opacity: 1; transform: none; }
+.reveal-delay-1 { transition-delay: .1s; }
+.reveal-delay-2 { transition-delay: .2s; }
+.reveal-delay-3 { transition-delay: .3s; }
+
+/* ── RESPONSIVE ── */
+@media (max-width: 900px) {
+  #hero { grid-template-columns: 1fr; gap: 3rem; padding-top: 80px; text-align: center; }
+  .hero-sub { margin: 0 auto 2.5rem; }
+  .hero-actions { justify-content: center; }
+  .hero-visual { padding: 2rem 0; }
+  .stats-grid { grid-template-columns: repeat(2, 1fr); }
+  .stat-item:nth-child(2) { border-right: none; }
+  .stat-item:nth-child(3) { border-top: 1px solid var(--hairline); }
+  .bento-card.span-4, .bento-card.span-6, .bento-card.span-8, .bento-card.col-span-5, .bento-card.col-span-7 { grid-column: span 12; }
+  .steps { grid-template-columns: 1fr; }
+  footer { grid-template-columns: 1fr; gap: 2rem; }
+  .nav-links { display: none; }
+  .nav-cta { display: none; }
+  .nav-hamburger { display: flex; }
+}
+@media (max-width: 600px) {
+  .phone-frame { width: 260px; height: 480px; }
+  .niches-grid { grid-template-columns: 1fr; }
+  .int-grid { grid-template-columns: repeat(3, 1fr); }
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-logo">
+    <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
+      <polyline points="22,4 14,4 14,16 22,16 22,28 14,28" stroke="#F4F1EB" stroke-width="2.2" fill="none" stroke-linecap="square"/>
+      <circle cx="14" cy="28" r="2.5" fill="#00D4FF"/>
+      <circle cx="22" cy="4" r="2.5" fill="#00D4FF"/>
+    </svg>
+    <div class="nav-logo-text">SMART<span>SKILLS</span></div>
+  </div>
+  <ul class="nav-links">
+    <li><a href="#features">Recursos</a></li>
+    <li><a href="#how">Como funciona</a></li>
+    <li><a href="#niches">Segmentos</a></li>
+  </ul>
+  <a href="https://wa.me/5521997676487?text=Ol%C3%A1%21+Vi+o+site+da+Smart+Skills+e+quero+ver+uma+demonstra%C3%A7%C3%A3o+do+agente." class="nav-cta" target="_blank">Falar com especialista</a>
+  <div class="nav-hamburger" onclick="document.querySelector('.nav-links').style.display='flex';this.style.display='none'">
+    <span></span><span></span><span></span>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section id="hero">
+  <div class="hero-grid-bg"></div>
+
+  <div class="hero-content">
+    <div class="hero-tag">Agente de IA · Atendimento Automatizado</div>
+    <h1 class="hero-title">
+      Seu cliente manda mensagem.<br>
+      <em>O agente responde.</em><br>
+      24 horas por dia.
+    </h1>
+    <p class="hero-sub">
+      Um agente de inteligência artificial treinado para a sua empresa, que atende no WhatsApp e mídias sociais, qualifica leads, agenda, gera cobranças e fecha contratos. Sem nenhum humano precisar estar presente.
+    </p>
+    <div class="hero-actions">
+      <a href="https://wa.me/5521997676487?text=Ol%C3%A1%21+Vi+o+site+da+Smart+Skills+e+quero+ver+uma+demonstra%C3%A7%C3%A3o+do+agente." class="btn-primary" target="_blank">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+        Agendar demonstração grátis
+      </a>
+      <a href="#how" class="btn-secondary">
+        Ver como funciona
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+      </a>
+    </div>
+  </div>
+
+  <!-- CHAT MOCK -->
+  <div class="hero-visual">
+    <div class="phone-frame">
+      <div class="phone-header">
+        <div class="phone-avatar">SS</div>
+        <div class="phone-info">
+          <p>Clínica Sorrir</p>
+          <span>● online agora</span>
+        </div>
+      </div>
+      <div class="phone-body" id="chat">
+        <div class="msg user chat-msg" id="m1">
+          Boa tarde! Qual o valor de uma limpeza?
+          <div class="msg-time">18:34</div>
+        </div>
+        <div class="typing chat-msg" id="t1" style="display:none">
+          <span></span><span></span><span></span>
+        </div>
+        <div class="msg agent chat-msg" id="m2" style="display:none">
+          <div class="agent-name">Agente IA · Smart Skills</div>
+          Olá! Boa tarde 😊 Nossa limpeza dental custa R$ 180. Você possui plano odontológico?
+          <div class="msg-time">18:34</div>
+        </div>
+        <div class="msg user chat-msg" id="m3" style="display:none">
+          Tenho Amil
+          <div class="msg-time">18:35</div>
+        </div>
+        <div class="typing chat-msg" id="t2" style="display:none">
+          <span></span><span></span><span></span>
+        </div>
+        <div class="msg agent chat-msg" id="m4" style="display:none">
+          <div class="agent-name">Agente IA · Smart Skills</div>
+          Perfeito! Aceitamos Amil com cobertura total. Qual o melhor dia para você esta semana?
+          <div class="msg-time">18:35</div>
+        </div>
+        <div class="msg user chat-msg" id="m5" style="display:none">
+          Quinta-feira à tarde
+          <div class="msg-time">18:35</div>
+        </div>
+        <div class="typing chat-msg" id="t3" style="display:none">
+          <span></span><span></span><span></span>
+        </div>
+        <div class="msg agent chat-msg" id="m6" style="display:none">
+          <div class="agent-name">Agente IA · Smart Skills</div>
+          Quinta tenho disponibilidade às 14h ou 16h30. Qual prefere? Já deixo registrado aqui 📅
+          <div class="msg-time">18:36</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- STATS -->
+<div id="stats">
+  <div class="stats-grid">
+    <div class="stat-item reveal">
+      <div class="stat-num">24/7</div>
+      <div class="stat-label">Atendimento ininterrupto</div>
+    </div>
+    <div class="stat-item reveal reveal-delay-1">
+      <div class="stat-num">&lt;5s</div>
+      <div class="stat-label">Tempo médio de resposta</div>
+    </div>
+    <div class="stat-item reveal reveal-delay-2">
+      <div class="stat-num">80%</div>
+      <div class="stat-label">Redução de atendimento manual</div>
+    </div>
+    <div class="stat-item reveal reveal-delay-3">
+      <div class="stat-num">3h</div>
+      <div class="stat-label">Economizadas por dia por empresa</div>
+    </div>
+  </div>
+</div>
+
+<!-- FEATURES -->
+<section id="features">
+  <div class="section-label reveal">Recursos</div>
+  <div class="section-rule"></div>
+  <h2 class="section-title reveal">Tudo que seu atendimento<br><em>precisa funcionar sozinho</em></h2>
+  <p class="section-sub reveal">O agente não é um chatbot com botões. É uma IA treinada com o conhecimento da sua empresa, que entende o contexto, responde de forma natural e executa ações reais.</p>
+
+  <div class="bento reveal">
+
+    <!-- 24/7 -->
+    <div class="bento-card span-6">
+      <div>
+        <div class="card-icon cyan">
+          <svg viewBox="0 0 24 24" fill="none" stroke="#00D4FF" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+        </div>
+        <div class="card-label">Disponibilidade</div>
+        <div class="card-title">Atendimento 24 horas, 7 dias por semana</div>
+        <div class="card-desc">O agente atende seu cliente às 22h de uma sexta-feira com a mesma qualidade de uma segunda de manhã. Nenhum lead fica sem resposta por causa de horário.</div>
+      </div>
+      <div class="card-highlight">→ Sem feriado. Sem folga. Sem demora.</div>
+    </div>
+
+    <!-- Humanizado -->
+    <div class="bento-card span-6">
+      <div>
+        <div class="card-icon violet">
+          <svg viewBox="0 0 24 24" fill="none" stroke="#8B5CF6" stroke-width="1.8" stroke-linecap="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+        </div>
+        <div class="card-label">Conversação</div>
+        <div class="card-title">Simula conversa como um ser humano</div>
+        <div class="card-desc">O agente é treinado com o tom e o vocabulário da sua empresa. Ele não soa como robô: responde com naturalidade, lembra o contexto da conversa e adapta a linguagem ao cliente.</div>
+      </div>
+      <div class="card-highlight">→ O cliente não percebe que está falando com IA.</div>
+    </div>
+
+    <!-- Multimodal -->
+    <div class="bento-card span-4">
+      <div>
+        <div class="card-icon amber">
+          <svg viewBox="0 0 24 24" fill="none" stroke="#F59E0B" stroke-width="1.8" stroke-linecap="round"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg>
+        </div>
+        <div class="card-label">Multimodal</div>
+        <div class="card-title">Entende texto, áudio, documento e imagem</div>
+        <div class="card-desc">Não apenas texto. O agente processa mensagens de voz, lê documentos enviados pelo cliente e interpreta imagens, como fotos de exames, receitas ou comprovantes.</div>
+      </div>
+      <div class="media-pills">
+        <span class="pill cyan">Texto</span>
+        <span class="pill violet">Áudio</span>
+        <span class="pill amber">Documento</span>
+        <span class="pill green">Imagem</span>
+      </div>
+    </div>
+
+    <!-- Qualificação -->
+    <div class="bento-card span-8">
+      <div>
+        <div class="card-icon green">
+          <svg viewBox="0 0 24 24" fill="none" stroke="#10B981" stroke-width="1.8" stroke-linecap="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+        </div>
+        <div class="card-label">Inteligência comercial</div>
+        <div class="card-title">Filtra e qualifica leads automaticamente</div>
+        <div class="card-desc">O agente faz as perguntas certas para entender a intenção do cliente, e classifica cada contato por interesse, urgência e perfil. Sua equipe recebe apenas os leads prontos para fechar.</div>
+      </div>
+      <div class="card-highlight">→ Você foca em vender. O agente faz a triagem.</div>
+      <svg class="card-deco" width="180" height="180" viewBox="0 0 180 180" fill="none">
+        <circle cx="90" cy="90" r="80" stroke="#10B981" stroke-width="1"/>
+        <circle cx="90" cy="90" r="55" stroke="#10B981" stroke-width="1"/>
+        <circle cx="90" cy="90" r="30" stroke="#10B981" stroke-width="1"/>
+      </svg>
+    </div>
+
+    <!-- Agendamento -->
+    <div class="bento-card span-6">
+      <div>
+        <div class="card-icon cyan">
+          <svg viewBox="0 0 24 24" fill="none" stroke="#00D4FF" stroke-width="1.8" stroke-linecap="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+        </div>
+        <div class="card-label">Agendamento direto</div>
+        <div class="card-title">Agenda no sistema do cliente ou Google Agenda</div>
+        <div class="card-desc">O agente verifica disponibilidade em tempo real e confirma o agendamento dentro da própria conversa, sem precisar de um humano consultando a agenda.</div>
+      </div>
+      <div class="integrations-logos">
+        <span class="int-badge">Google Agenda</span>
+        <span class="int-badge">Clinicorp</span>
+        <span class="int-badge">Odontosys</span>
+        <span class="int-badge">+ outros via API</span>
+      </div>
+    </div>
+
+    <!-- Cobranças e contratos -->
+    <div class="bento-card span-6">
+      <div>
+        <div class="card-icon violet">
+          <svg viewBox="0 0 24 24" fill="none" stroke="#8B5CF6" stroke-width="1.8" stroke-linecap="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+        </div>
+        <div class="card-label">Financeiro e contratos</div>
+        <div class="card-title">Gera cobrança, confirma pagamento e assina contratos</div>
+        <div class="card-desc">O agente gera links de pagamento (Pix, boleto, cartão), confirma quando o pagamento é realizado e encaminha contratos para assinatura digital, tudo dentro do WhatsApp.</div>
+      </div>
+      <div class="card-highlight">→ Da conversa ao contrato assinado sem sair do chat.</div>
+    </div>
+
+    <!-- Automações internas -->
+    <div class="bento-card span-12">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:2rem;align-items:center">
+        <div>
+          <div class="card-icon amber">
+            <svg viewBox="0 0 24 24" fill="none" stroke="#F59E0B" stroke-width="1.8" stroke-linecap="round"><polyline points="16 3 21 3 21 8"/><line x1="4" y1="20" x2="21" y2="3"/><polyline points="21 16 21 21 16 21"/><line x1="15" y1="15" x2="21" y2="21"/></svg>
+          </div>
+          <div class="card-label">Automações internas</div>
+          <div class="card-title">Integração com fluxos de automação da operação</div>
+          <div class="card-desc">O agente se conecta com as automações internas da sua empresa via n8n, Zapier ou Make, disparando notificações para a equipe, atualizando CRMs, preenchendo planilhas e muito mais.</div>
+          <div class="card-highlight" style="margin-top:1.5rem">→ O atendimento vira o gatilho de toda a operação.</div>
+        </div>
+        <div>
+          <div style="display:flex;flex-wrap:wrap;gap:.5rem">
+            <span class="int-badge">n8n</span>
+            <span class="int-badge">Zapier</span>
+            <span class="int-badge">Make</span>
+            <span class="int-badge">ActiveCampaign</span>
+            <span class="int-badge">RD Station</span>
+            <span class="int-badge">Chatwoot</span>
+            <span class="int-badge">Google Sheets</span>
+            <span class="int-badge">Supabase</span>
+            <span class="int-badge">Slack / Teams</span>
+            <span class="int-badge">Webhooks</span>
+          </div>
+          <p style="font-size:.82rem;color:rgba(244,241,235,.5);margin-top:1rem;font-family:var(--mono)">+ qualquer sistema com API aberta</p>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section id="how">
+  <div class="section-label reveal">Processo</div>
+  <div class="section-rule"></div>
+  <h2 class="section-title reveal">Do briefing ao agente<br><em>em 5 a 10 dias úteis</em></h2>
+  <p class="section-sub reveal">A implementação é feita pela nossa equipe. Você não precisa entender de tecnologia. Basta a aprovação e treinamento da sua equipe para usar o painel.</p>
+
+  <div class="steps">
+    <div class="step reveal">
+      <div class="step-num">01</div>
+      <div class="step-title">Diagnóstico e treinamento</div>
+      <div class="step-desc">Levantamos as perguntas mais frequentes dos seus clientes, os serviços que você oferece, regras de agendamento, valores e o tom de comunicação da sua empresa. Esse material vira a base de conhecimento do agente.</div>
+    </div>
+    <div class="step reveal reveal-delay-1">
+      <div class="step-num">02</div>
+      <div class="step-title">Desenvolvimento e integrações</div>
+      <div class="step-desc">Construímos o agente, conectamos ao seu WhatsApp Business, configuramos as integrações necessárias (agenda, cobrança, CRM) e realizamos os testes com cenários reais antes de ativar.</div>
+    </div>
+    <div class="step reveal reveal-delay-2">
+      <div class="step-num">03</div>
+      <div class="step-title">Ativação e manutenção contínua</div>
+      <div class="step-desc">O agente entra em produção. Treinamos sua equipe para acompanhar as conversas pelo painel e, mensalmente, refinamos as respostas com base nos atendimentos reais, e o agente fica mais inteligente com o tempo.</div>
+    </div>
+  </div>
+</section>
+
+<!-- NICHES -->
+<section id="niches">
+  <div class="section-label reveal">Segmentos</div>
+  <div class="section-rule"></div>
+  <h2 class="section-title reveal">Onde o agente<br><em>já prova resultado</em></h2>
+  <p class="section-sub reveal">O agente é treinado especificamente para o seu segmento, não é solução genérica. Cada nicho tem suas próprias perguntas, objeções e fluxo de atendimento.</p>
+
+  <div class="niches-grid reveal">
+    <div class="niche-card featured">
+      <div class="niche-badge">Melhor caso de uso</div>
+      <div class="niche-title">Clínica Odontológica</div>
+      <div class="niche-pain">Responde sobre convênios, valores de tratamento, disponibilidade de horário. Agenda consultas e envia confirmação automática. Atende às 22h o paciente que quer marcar implante.</div>
+      <div class="niche-roi">→ Cada lead perdido fora do horário vale R$ 1.500+</div>
+    </div>
+    <div class="niche-card">
+      <div class="niche-title">Clínica Veterinária</div>
+      <div class="niche-pain">Triagem de urgências fora do horário, retorno de exames, agendamento de banho e tosa, controle de vacinas, tudo automatizado no WhatsApp.</div>
+      <div class="niche-roi">→ Urgências fora de horário são dor real e recorrente</div>
+    </div>
+    <div class="niche-card">
+      <div class="niche-title">Salão de Beleza e Estética</div>
+      <div class="niche-pain">Agendamento por WhatsApp sem confusão, confirmação de horário 24h antes, lista de espera automática para cancelamentos e cobrança de sinal antecipado.</div>
+      <div class="niche-roi">→ Cancela menos, agenda mais, perde menos receita</div>
+    </div>
+    <div class="niche-card">
+      <div class="niche-title">Clínica de Saúde e Bem-Estar</div>
+      <div class="niche-pain">Fonoaudiologia, psicologia, fisioterapia: atende as dúvidas iniciais dos responsáveis, qualifica o caso e agenda a primeira consulta de avaliação.</div>
+      <div class="niche-roi">→ Triagem inteligente que economiza tempo do especialista</div>
+    </div>
+    <div class="niche-card">
+      <div class="niche-title">Serviços Locais e Franquias</div>
+      <div class="niche-pain">Academias, studios, escritórios, imobiliárias: o agente escala o atendimento sem contratar mais recepcionistas, mantendo consistência em todas as unidades.</div>
+      <div class="niche-roi">→ Escalável sem crescer o headcount</div>
+    </div>
+    <div class="niche-card">
+      <div class="niche-title">Infoprodutores e E-commerce</div>
+      <div class="niche-pain">Recuperação de carrinho abandonado, confirmação de boleto vencido, onboarding de alunos, suporte pós-compra e retenção, tudo automatizado sem equipe de atendimento grande.</div>
+      <div class="niche-roi">→ Receita recuperada no piloto automático</div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA FINAL -->
+<section id="cta-final">
+  <div class="section-label reveal" style="text-align:center">Próximo passo</div>
+  <h2 class="reveal">Veja o agente funcionando<br><em>para a sua empresa</em></h2>
+  <p class="reveal">Demonstração gratuita de 20 minutos. Mostramos o agente respondendo perguntas reais do seu segmento, ao vivo, sem script.</p>
+  <div class="cta-actions reveal">
+    <a href="https://wa.me/5521997676487?text=Ol%C3%A1%21+Quero+agendar+uma+demonstra%C3%A7%C3%A3o+do+agente+de+IA." class="btn-primary" target="_blank">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+      Falar no WhatsApp
+    </a>
+    <a href="mailto:contato@smartskillshub.com.br" class="btn-outline">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+      Enviar e-mail
+    </a>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-brand">
+    <div class="nav-logo" style="margin-bottom:.75rem">
+      <svg width="28" height="28" viewBox="0 0 32 32" fill="none">
+        <polyline points="22,4 14,4 14,16 22,16 22,28 14,28" stroke="#F4F1EB" stroke-width="2.2" fill="none" stroke-linecap="square"/>
+        <circle cx="14" cy="28" r="2.5" fill="#00D4FF"/>
+        <circle cx="22" cy="4" r="2.5" fill="#00D4FF"/>
+      </svg>
+      <div class="nav-logo-text" style="font-size:1rem">SMART<span>SKILLS</span></div>
+    </div>
+    <p>Automação e rastreamento que provam o resultado, não apenas entregam o serviço.</p>
+  </div>
+  <div class="footer-col">
+    <h4>Serviços</h4>
+    <ul>
+      <li><a href="#features">Agentes de IA</a></li>
+      <li><a href="#">Rastreamento de Dados</a></li>
+      <li><a href="#">Automação de Processos</a></li>
+      <li><a href="#">Dashboards e BI</a></li>
+    </ul>
+  </div>
+  <div class="footer-col">
+    <h4>Contato</h4>
+    <ul>
+      <li><a href="https://wa.me/5521997676487" target="_blank" style="display:flex;align-items:center;gap:.5rem"><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>(21) 99767-6487</a></li>
+      <li><a href="mailto:contato@smartskillshub.com.br" style="display:flex;align-items:center;gap:.5rem"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>contato@smartskillshub.com.br</a></li>
+      <li><a href="https://www.instagram.com/smartskills.hub" target="_blank" style="display:flex;align-items:center;gap:.5rem"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="5"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/></svg>@smartskills.hub</a></li>
+      <li><a href="https://facebook.com/smartskillshubrj" target="_blank" style="display:flex;align-items:center;gap:.5rem"><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg>smartskillshubrj</a></li>
+    </ul>
+  </div>
+</footer>
+<div class="footer-bottom">
+  <p>© 2026 Smart Skills Hub. Todos os direitos reservados.</p>
+  <div class="footer-socials">
+    <a href="https://www.instagram.com/smartskills.hub" target="_blank" aria-label="Instagram">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="5"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/></svg>
+    </a>
+    <a href="https://facebook.com/smartskillshubrj" target="_blank" aria-label="Facebook">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg>
+    </a>
+    <a href="https://wa.me/5521997676487" target="_blank" aria-label="WhatsApp">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+    </a>
+  </div>
+</div>
+
+<!-- WHATSAPP FLOAT -->
+<a class="wa-float" href="https://wa.me/5521997676487?text=Ol%C3%A1%21+Vi+o+site+da+Smart+Skills+e+quero+saber+mais+sobre+o+agente+de+IA." target="_blank" aria-label="Falar no WhatsApp">
+  <div class="wa-float-label">Falar no WhatsApp</div>
+  <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+</a>
+
+<script>
+// ── SCROLL REVEAL ──
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); observer.unobserve(e.target); } });
+}, { threshold: 0.12 });
+document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+// ── CHAT ANIMATION ──
+const chatSequence = [
+  { id: 'm1',  delay: 800 },
+  { id: 't1',  delay: 1600 },
+  { id: 't1',  hide: true, delay: 2600 },
+  { id: 'm2',  delay: 2600 },
+  { id: 'm3',  delay: 4000 },
+  { id: 't2',  delay: 4800 },
+  { id: 't2',  hide: true, delay: 5800 },
+  { id: 'm4',  delay: 5800 },
+  { id: 'm5',  delay: 7200 },
+  { id: 't3',  delay: 8000 },
+  { id: 't3',  hide: true, delay: 9200 },
+  { id: 'm6',  delay: 9200 },
+];
+
+function runChat() {
+  chatSequence.forEach(step => {
+    setTimeout(() => {
+      const el = document.getElementById(step.id);
+      if (!el) return;
+      if (step.hide) { el.style.display = 'none'; return; }
+      el.style.display = el.id.startsWith('t') ? 'flex' : 'block';
+      requestAnimationFrame(() => { setTimeout(() => el.classList.add('show'), 30); });
+      // auto-scroll
+      const chat = document.getElementById('chat');
+      if (chat) chat.scrollTop = chat.scrollHeight;
+    }, step.delay);
+  });
+  // restart loop
+  setTimeout(() => {
+    chatSequence.forEach(s => {
+      const el = document.getElementById(s.id);
+      if (el) { el.style.display = 'none'; el.classList.remove('show'); }
+    });
+    setTimeout(runChat, 1200);
+  }, 12000);
+}
+document.addEventListener('DOMContentLoaded', () => setTimeout(runChat, 800));
+</script>
+</body>
+</html>
