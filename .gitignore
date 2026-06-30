@@ -1,0 +1,5 @@
+# Ignora tudo neste repositório raiz (monorepo local)
+# O smartskills-page só deve conter index.html
+*
+!.gitignore
+!index.html
