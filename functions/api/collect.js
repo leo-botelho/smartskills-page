@@ -9,6 +9,8 @@ import { encaminharDestinos } from '../_lib/destinos.js';
 
 const COOKIE_VISITANTE = 'ssh_vid';
 const COOKIE_SESSAO = 'ssh_sid';
+const COOKIE_FBC = 'ssh_fbc';   // guarda o clique de anúncio da Meta entre páginas
+const FBC_DIAS = 90;
 const SESSAO_MIN = 30;              // sessão expira com 30 min de inatividade
 const VISITANTE_DIAS = 365;
 const CONVERSOES = new Set(['whatsapp_click', 'email_click', 'form_submit', 'demo_agendada']);
@@ -90,6 +92,12 @@ export async function onRequestPost(ctx) {
   const ipHash = ip ? await sha256(ip + (env.IP_SALT || 'smartskills')) : null;
   const guardarIpBruto = String(env.ARMAZENAR_IP_BRUTO ?? 'true') === 'true';
 
+  // fbclid só existe na URL de entrada; guardamos para a conversão que acontece páginas depois.
+  const fbclidUrl = (() => { try { return new URL(corta(corpo.url, LIMITE_TEXTO) || '').searchParams.get('fbclid'); } catch { return null; } })();
+  let fbc = cookies[COOKIE_FBC] || null;
+  let fbcNovo = false;
+  if (fbclidUrl) { fbc = `fb.1.${Date.now()}.${fbclidUrl}`; fbcNovo = true; }
+
   const url = corta(corpo.url, LIMITE_TEXTO);
   const ref = corta(corpo.referrer, LIMITE_TEXTO);
   const q = (() => { try { return new URL(url).searchParams; } catch { return new URLSearchParams(); } })();
@@ -128,7 +136,10 @@ export async function onRequestPost(ctx) {
     viewport: corta(corpo.viewport, 32),
 
     ...geo,
-    extras: (corpo.extras && typeof corpo.extras === 'object') ? corpo.extras : {},
+    extras: {
+      ...((corpo.extras && typeof corpo.extras === 'object') ? corpo.extras : {}),
+      ...(fbc ? { fbc } : {}),
+    },
   };
 
   // Responde na hora; a gravação segue em background (não segura o usuário).
@@ -152,6 +163,7 @@ export async function onRequestPost(ctx) {
   });
   headers.append('set-cookie', cookie(COOKIE_VISITANTE, visitante, VISITANTE_DIAS * 86400, dominio));
   headers.append('set-cookie', cookie(COOKIE_SESSAO, sessao, SESSAO_MIN * 60, dominio));
+  if (fbcNovo) headers.append('set-cookie', cookie(COOKIE_FBC, fbc, FBC_DIAS * 86400, dominio));
   return new Response(JSON.stringify({ ok: true }), { status: 202, headers });
 }
 

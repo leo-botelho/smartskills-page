@@ -45,12 +45,17 @@ async function metaCapi(env, e) {
   };
   if (e.cidade) user_data.ct = await sha256Hex(e.cidade);
   if (e.pais) user_data.country = await sha256Hex(e.pais);
+  if (e.regiao_codigo) user_data.st = await sha256Hex(e.regiao_codigo);
+  // fbc: identifica o clique no anúncio. É o que mais pesa na qualidade da correspondência.
+  if (e.extras?.fbc) user_data.fbc = e.extras.fbc;
   await fetch(url, {
     method: 'POST',
     headers: { 'content-type': 'application/json' },
     body: JSON.stringify({
       data: [{
         event_name: e.evento === 'whatsapp_click' ? 'Contact' : e.evento,
+        // event_id permite deduplicar caso um pixel de navegador seja adicionado depois.
+        event_id: `${e.sessao_id}-${e.evento}-${Math.floor(new Date(e.ocorrido_em).getTime() / 1000)}`,
         event_time: Math.floor(new Date(e.ocorrido_em).getTime() / 1000),
         event_source_url: e.url,
         action_source: 'website',
