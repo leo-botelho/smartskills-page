@@ -47,7 +47,12 @@ supabase link --project-ref SEU_PROJECT_REF
 supabase db push
 ```
 
-Ou cole o conteúdo de `supabase/migrations/20260823120000_tracking.sql` no SQL Editor do painel do Supabase.
+Ou cole no SQL Editor do painel do Supabase, **nesta ordem**, o conteúdo de:
+
+1. `supabase/migrations/20260823120000_tracking.sql` (schema, tabela, views, funções)
+2. `supabase/migrations/20260824140000_tracking_grants.sql` (permissões)
+
+A segunda é obrigatória: sem os grants, o PostgREST responde `42501 permission denied for schema tracking`, porque ignorar RLS e ter permissão de schema são coisas diferentes, e a `service_role` precisa das duas.
 
 Depois, em **Project Settings → API → Data API**, exponha o schema `tracking` (campo "Exposed schemas"). Sem isso o PostgREST devolve 404 ao gravar.
 
