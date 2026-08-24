@@ -1,7 +1,7 @@
 // Protege o dashboard e a API de estatísticas com Basic Auth.
 // O resto do site (páginas públicas e /api/collect) passa direto.
 
-const PROTEGIDO = [/^\/dashboard(\.html)?$/, /^\/api\/stats$/];
+const PROTEGIDO = [/^\/dashboard(\.html)?$/, /^\/api\/stats$/, /^\/api\/diag$/];
 
 // Arquivos do repositório que não devem ser servidos no domínio.
 // Regra de _redirects não resolve: asset existente tem precedência sobre redirect.
