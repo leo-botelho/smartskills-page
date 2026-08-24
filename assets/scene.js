@@ -60,8 +60,10 @@ export function mountScene(container, mode = 'hero') {
   }
   // Nós emissivos nas extremidades
   const nodes = [PTS[0], PTS[PTS.length - 1]].map(p => {
-    const m = new THREE.Mesh(new THREE.SphereGeometry(2.5, 32, 32), nodeMat);
-    m.position.copy(p).setZ(D / 2 + 0.4); group.add(m);
+    // Centrada na barra (z = 0) e com raio maior que a meia-diagonal da ponta,
+    // para o nó envolver o fim do traço em qualquer ângulo de rotação.
+    const m = new THREE.Mesh(new THREE.SphereGeometry(2.9, 32, 32), nodeMat);
+    m.position.copy(p); group.add(m);
     const l = new THREE.PointLight(CYAN, 10, 36, 2); l.position.copy(m.position).setZ(m.position.z + 3); group.add(l);
     return m;
   });

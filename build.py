@@ -1,5 +1,6 @@
 # Gera as páginas do site a partir de um layout comum. Rodar: python build.py
 import os
+from urllib.parse import quote
 OUT = os.path.dirname(os.path.abspath(__file__))
 PHONE = "(21) 97191-9691"; WA = "https://wa.me/5521971919691"; MAIL = "adm@smartskillshub.com.br"
 FONTS = "https://fonts.googleapis.com/css2?family=IBM+Plex+Serif:ital,wght@0,400;0,600;0,700;1,400&family=IBM+Plex+Mono:wght@400;600&family=Instrument+Serif:ital@0;1&display=swap"
@@ -30,10 +31,23 @@ ICONS = {
 }
 NAV = [('plataformas.html','Plataformas'),('agentes-de-ia.html','Agentes de IA'),('automacoes.html','Automações'),('cases.html','Cases'),('sobre.html','Sobre')]
 
-def wa(origem): return f'whatsapp.html?origem={origem}'
+# Mensagem por origem: o agente recebe o contexto de onde a pessoa veio.
+MSG_WA = {
+    'home': 'Olá. Vi o site da Smart Skills Hub e quero entender qual frente resolve o meu caso.',
+    'plataformas': 'Olá. Quero conversar sobre o desenvolvimento de um sistema ou aplicativo para a minha empresa.',
+    'agentes': 'Olá. Quero ver uma demonstração do agente de IA para o meu segmento.',
+    'automacoes': 'Olá. Tenho um processo repetitivo que quero automatizar.',
+    'cases': 'Olá. Vi os cases no site e quero saber como ficaria no meu segmento.',
+    'sobre': 'Olá. Quero falar com a equipe da Smart Skills Hub.',
+}
 
-def scene(mode, caption):
-    return f'''<div class="hero-visual"><div class="scene" data-mode="{mode}"><div class="scene-fallback" aria-hidden="true">{SYMBOL.replace('width="32" height="32"','')}</div><div class="scene-mount" aria-hidden="true"></div><div class="scene-caption">{caption}</div></div></div>'''
+def wa(origem):
+    # Link direto do WhatsApp. O clique segue medido: o track.js dispara
+    # whatsapp_click com os UTMs da página antes da navegação.
+    return WA + '?text=' + quote(MSG_WA.get(origem, MSG_WA['home']))
+
+def scene(mode, caption=None):   # caption não é mais exibida
+    return f'''<div class="hero-visual"><div class="scene" data-mode="{mode}"><div class="scene-fallback" aria-hidden="true">{SYMBOL.replace('width="32" height="32"','')}</div><div class="scene-mount" aria-hidden="true"></div></div></div>'''
 
 CHAT = '''<div class="hero-visual"><div class="phone-frame" aria-label="Demonstração do agente de IA respondendo no WhatsApp">
 <div class="phone-header"><div class="phone-avatar">SS</div><div class="phone-info"><p>Clínica Sorrir</p><span>● online agora</span></div></div>
@@ -52,7 +66,7 @@ CHAT = '''<div class="hero-visual"><div class="phone-frame" aria-label="Demonstr
 def hero(tag, title, sub, origem, visual, secondary=('#como','Ver como funciona'), cls=''):
     return f'''<section class="hero {cls}" aria-labelledby="hero-heading" style="padding-bottom:0"><div class="hero-grid-bg"></div>
 <div class="hero-content"><div class="hero-tag">{tag}</div><h1 class="hero-title" id="hero-heading">{title}</h1><p class="hero-sub">{sub}</p>
-<div class="hero-actions"><a href="{wa(origem)}" class="btn-primary">{WA_ICON}Falar com especialista</a><a href="{secondary[0]}" class="btn-secondary">{secondary[1]} {ARROW}</a></div></div>{visual}</section>'''
+<div class="hero-actions"><a href="{wa(origem)}" class="btn-primary" target="_blank" rel="noopener noreferrer">{WA_ICON}Falar com especialista</a><a href="{secondary[0]}" class="btn-secondary">{secondary[1]} {ARROW}</a></div></div>{visual}</section>'''
 
 def section(label, title, sub, body, bg='bg-deep', sid=''):
     idattr = f' id="{sid}"' if sid else ''
@@ -76,20 +90,20 @@ def faq(items):
 
 def cta(title, text, origem):
     return f'''<section class="cta-final"><div class="section-label reveal" style="text-align:center">Próximo passo</div><h2 class="reveal">{title}</h2><p class="reveal">{text}</p>
-<div class="cta-actions reveal"><a href="{wa(origem)}" class="btn-primary">{WA_ICON}Falar no WhatsApp</a><a href="mailto:{MAIL}" class="btn-outline">{MAIL_ICON}Enviar e-mail</a></div></section>'''
+<div class="cta-actions reveal"><a href="{wa(origem)}" class="btn-primary" target="_blank" rel="noopener noreferrer">{WA_ICON}Falar no WhatsApp</a><a href="mailto:{MAIL}" class="btn-outline">{MAIL_ICON}Enviar e-mail</a></div></section>'''
 
 def page(fname, title, desc, body, mode=None, current=None, minimal=False):
     links = ''.join(f'<li><a href="{h}"{" aria-current=page" if h==current else ""}>{t}</a></li>' for h,t in NAV)
-    mlinks = ''.join(f'<a href="{h}">{t}</a>' for h,t in NAV) + f'<a href="{wa("home")}" style="color:var(--cyan)">Falar com especialista</a>'
+    mlinks = ''.join(f'<a href="{h}">{t}</a>' for h,t in NAV) + f'<a href="{wa("home")}" target="_blank" rel="noopener noreferrer" style="color:var(--cyan)">Falar com especialista</a>'
     nav = '' if minimal else f'''<nav class="site-nav" aria-label="Navegação principal"><a class="nav-logo" href="index.html">{SYMBOL}<div class="nav-logo-text">SMART<span>SKILLS</span></div></a>
-<ul class="nav-links">{links}</ul><a href="{wa('home')}" class="nav-cta">Falar com especialista</a>
+<ul class="nav-links">{links}</ul><a href="{wa('home')}" class="nav-cta" target="_blank" rel="noopener noreferrer">Falar com especialista</a>
 <button class="nav-hamburger" aria-label="Abrir menu" aria-expanded="false"><span></span><span></span><span></span></button></nav><div class="nav-mobile">{mlinks}</div>'''
     footer = '' if minimal else f'''<footer><div class="footer-brand"><a class="nav-logo" href="index.html">{SYMBOL.replace('width="32" height="32"','width="28" height="28"')}<div class="nav-logo-text" style="font-size:1rem">SMART<span>SKILLS</span></div></a><p>Plataformas, agentes de IA e automações para empresas de serviços.</p></div>
 <div class="footer-col"><h4>Serviços</h4><ul><li><a href="plataformas.html">Plataformas e Aplicativos</a></li><li><a href="agentes-de-ia.html">Agentes de IA</a></li><li><a href="automacoes.html">Automações</a></li></ul></div>
 <div class="footer-col"><h4>Empresa</h4><ul><li><a href="cases.html">Cases</a></li><li><a href="sobre.html">Sobre</a></li><li><a href="privacidade.html">Privacidade</a></li><li><a href="termos.html">Termos</a></li><li><a href="exclusao-dados.html">Exclusão de dados</a></li></ul></div>
 <div class="footer-col"><h4>Contato</h4><ul><li><a href="{WA}" target="_blank" rel="noopener noreferrer">{WA_ICON.replace('16','14')}{PHONE}</a></li><li><a href="mailto:{MAIL}">{MAIL_ICON.replace('16','14')}{MAIL}</a></li><li><a href="https://www.instagram.com/smartskills.hub" target="_blank" rel="noopener noreferrer">{IG_ICON.replace('18','14')}@smartskills.hub</a></li><li><a href="https://facebook.com/smartskillshubrj" target="_blank" rel="noopener noreferrer">{FB_ICON.replace('18','14')}smartskillshubrj</a></li></ul></div></footer>
 <div class="footer-bottom"><p>© 2026 Smart Skills Hub. Todos os direitos reservados.</p><div class="footer-socials"><a href="https://www.instagram.com/smartskills.hub" target="_blank" rel="noopener noreferrer" aria-label="Instagram">{IG_ICON}</a><a href="https://facebook.com/smartskillshubrj" target="_blank" rel="noopener noreferrer" aria-label="Facebook">{FB_ICON}</a><a href="{WA}" target="_blank" rel="noopener noreferrer" aria-label="WhatsApp">{WA_ICON.replace('16','18')}</a></div></div>
-<a class="wa-float" href="{wa('home')}" aria-label="Falar no WhatsApp"><div class="wa-float-label">Falar no WhatsApp</div>{WA_ICON.replace('width="16" height="16" ','')}</a>'''
+<a class="wa-float" href="{wa('home')}" target="_blank" rel="noopener noreferrer" aria-label="Falar no WhatsApp"><div class="wa-float-label">Falar no WhatsApp</div>{WA_ICON.replace('width="16" height="16" ','')}</a>'''
     three = f'''<script type="importmap">{{"imports":{{"three":"https://unpkg.com/three@0.170.0/build/three.module.js"}}}}</script>
 <script type="module">import {{ mountScene }} from './assets/scene.js'; const m=document.querySelector('.scene-mount'); if(m) mountScene(m, '{mode}');</script>''' if mode else ''
     html = f'''<!DOCTYPE html>
