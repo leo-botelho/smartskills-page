@@ -3,6 +3,18 @@
 
 const PROTEGIDO = [/^\/dashboard(\.html)?$/, /^\/api\/stats$/];
 
+// Arquivos do repositório que não devem ser servidos no domínio.
+// Regra de _redirects não resolve: asset existente tem precedência sobre redirect.
+// Function tem precedência sobre asset, então o bloqueio vive aqui.
+const INTERNO = [
+  /^\/supabase\//,
+  /^\/(TRACKING|README)\.md$/i,
+  /^\/build\.py$/i,
+  /^\/package(-lock)?\.json$/i,
+  /^\/wrangler\.jsonc?$/i,
+  /^\/\.dev\.vars/i,
+];
+
 function naoAutorizado() {
   return new Response('Acesso restrito', {
     status: 401,
@@ -23,6 +35,11 @@ function iguais(a, b) {
 
 export async function onRequest(ctx) {
   const url = new URL(ctx.request.url);
+
+  if (INTERNO.some((r) => r.test(url.pathname))) {
+    return new Response('Não encontrado', { status: 404, headers: { 'content-type': 'text/plain; charset=utf-8' } });
+  }
+
   if (!PROTEGIDO.some((r) => r.test(url.pathname))) return ctx.next();
 
   const usuario = ctx.env.PAINEL_USUARIO;

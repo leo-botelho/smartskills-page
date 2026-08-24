@@ -1,9 +1,0 @@
-# Arquivos internos do repositório não devem ser servidos no domínio.
-/build.py           /404.html  404
-/package.json       /404.html  404
-/package-lock.json  /404.html  404
-/README.md          /404.html  404
-/TRACKING.md        /404.html  404
-/wrangler.jsonc     /404.html  404
-/.dev.vars.example  /404.html  404
-/supabase/*         /404.html  404

@@ -1,5 +1,17 @@
 {
   "version": 1,
-  "include": ["/api/*", "/dashboard", "/dashboard.html"],
+  "include": [
+    "/api/*",
+    "/dashboard",
+    "/dashboard.html",
+    "/supabase/*",
+    "/TRACKING.md",
+    "/README.md",
+    "/build.py",
+    "/package.json",
+    "/package-lock.json",
+    "/wrangler.jsonc",
+    "/.dev.vars.example"
+  ],
   "exclude": []
 }
