@@ -1,0 +1,14 @@
+{
+  "name": "smartskills-site",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "python build.py",
+    "dev": "wrangler pages dev . --port 8788",
+    "deploy": "wrangler pages deploy .",
+    "db:push": "supabase db push"
+  },
+  "devDependencies": {
+    "wrangler": "^4.0.0"
+  }
+}

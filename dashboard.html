@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<title>Painel de tracking | Smart Skills Hub</title>
+<link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Serif:ital,wght@0,400;0,600;1,400&family=IBM+Plex+Mono:wght@400;600&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+<style>
+:root{--deep:#08090F;--navy:#0E1628;--carbon:#1C2035;--hairline:#2A3450;--white:#F4F1EB;--grey:#9CA3AF;--cyan:#00D4FF;--violet:#8B5CF6;--amber:#F59E0B;--green:#10B981;
+--serif:'IBM Plex Serif',Georgia,serif;--mono:'IBM Plex Mono',monospace;--display:'Instrument Serif',Georgia,serif}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--deep);color:var(--white);font-family:var(--serif);line-height:1.6;padding:2rem 4% 5rem}
+a{color:inherit}
+header{display:flex;align-items:flex-end;justify-content:space-between;gap:1.5rem;flex-wrap:wrap;border-bottom:1px solid var(--hairline);padding-bottom:1.25rem;margin-bottom:2rem}
+.logo{display:flex;align-items:center;gap:.75rem;font-family:var(--display);font-size:1.15rem}
+.logo b{font-weight:400;color:var(--cyan)}
+h1{font-family:var(--display);font-weight:400;font-size:1.9rem;line-height:1.1;margin-top:.4rem}
+h1 em{font-style:italic;color:var(--cyan)}
+.periodos{display:flex;gap:.5rem;flex-wrap:wrap}
+button{font-family:var(--mono);font-size:.65rem;letter-spacing:.1em;text-transform:uppercase;background:none;border:1px solid var(--hairline);color:var(--grey);padding:.5rem .9rem;border-radius:2px;cursor:pointer;transition:.2s}
+button:hover{color:var(--cyan);border-color:rgba(0,212,255,.4)}
+button.on{color:var(--deep);background:var(--cyan);border-color:var(--cyan);font-weight:600}
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:1px;background:var(--hairline);border:1px solid var(--hairline);border-radius:4px;overflow:hidden;margin-bottom:2rem}
+.kpi{background:var(--navy);padding:1.5rem}
+.kpi .n{font-family:var(--display);font-size:2.6rem;line-height:1;color:var(--cyan)}
+.kpi .l{font-family:var(--mono);font-size:.6rem;letter-spacing:.12em;text-transform:uppercase;color:var(--grey);margin-top:.5rem}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(340px,1fr));gap:1.5rem}
+.card{background:var(--navy);border:1px solid var(--hairline);border-radius:4px;padding:1.5rem}
+.card.wide{grid-column:1/-1}
+.card h2{font-family:var(--mono);font-size:.62rem;letter-spacing:.14em;text-transform:uppercase;color:var(--cyan);margin-bottom:1.25rem}
+table{width:100%;border-collapse:collapse;font-size:.85rem}
+th{font-family:var(--mono);font-size:.58rem;letter-spacing:.1em;text-transform:uppercase;color:var(--grey);text-align:left;padding:.45rem .5rem;border-bottom:1px solid var(--hairline)}
+td{padding:.45rem .5rem;border-bottom:1px solid rgba(42,52,80,.5);color:rgba(244,241,235,.85)}
+td.num,th.num{text-align:right;font-family:var(--mono);font-size:.78rem}
+tr:last-child td{border-bottom:none}
+.bar{position:relative;background:rgba(0,212,255,.09);height:22px;border-radius:2px;min-width:2px}
+.bar span{position:absolute;inset:0;display:flex;align-items:center;padding-left:.5rem;font-family:var(--mono);font-size:.68rem;color:var(--white)}
+.bar i{position:absolute;inset:0 auto 0 0;background:rgba(0,212,255,.28);border-radius:2px}
+.card svg{width:100%;height:auto;display:block;overflow:visible}
+.logo svg{width:30px;height:30px;flex:none}
+.legenda{font-family:var(--mono);font-size:.58rem;letter-spacing:.08em;color:var(--grey);margin-top:.75rem}
+.vazio{color:var(--grey);font-size:.85rem;padding:1rem 0}
+.rodape{font-family:var(--mono);font-size:.58rem;letter-spacing:.08em;color:var(--grey);margin-top:2.5rem;border-top:1px solid var(--hairline);padding-top:1rem;display:flex;justify-content:space-between;gap:1rem;flex-wrap:wrap}
+.erro{border-left:3px solid #F87171;background:rgba(248,113,113,.08);padding:1rem 1.25rem;font-size:.9rem;margin-bottom:1.5rem}
+.tag{font-family:var(--mono);font-size:.55rem;letter-spacing:.08em;text-transform:uppercase;padding:.15rem .45rem;border-radius:2px;border:1px solid rgba(16,185,129,.35);color:var(--green);background:rgba(16,185,129,.06)}
+</style>
+</head>
+<body>
+<header>
+  <div>
+    <div class="logo">
+      <svg width="30" height="30" viewBox="0 0 32 32" fill="none"><polyline points="22,4 14,4 14,16 22,16 22,28 14,28" stroke="#F4F1EB" stroke-width="2.2" fill="none" stroke-linecap="square"/><circle cx="14" cy="28" r="2.5" fill="#00D4FF"/><circle cx="22" cy="4" r="2.5" fill="#00D4FF"/></svg>
+      <span>SMART<b>SKILLS</b></span>
+    </div>
+    <h1>Painel de <em>tracking próprio</em></h1>
+  </div>
+  <div class="periodos">
+    <button data-dias="7">7 dias</button>
+    <button data-dias="30" class="on">30 dias</button>
+    <button data-dias="90">90 dias</button>
+    <button id="atualizar">atualizar</button>
+  </div>
+</header>
+
+<div id="erro"></div>
+<div class="kpis" id="kpis"></div>
+<div class="grid" id="grid"></div>
+
+<div class="rodape">
+  <span id="carimbo">carregando…</span>
+  <span>coleta server-side · supabase · sem terceiros</span>
+</div>
+
+<script>
+const el = (h) => { const d = document.createElement('div'); d.innerHTML = h.trim(); return d.firstElementChild; };
+const n = (v) => (v ?? 0).toLocaleString('pt-BR');
+const esc = (s) => String(s ?? '').replace(/[<>&"]/g, (c) => ({'<':'&lt;','>':'&gt;','&':'&amp;','"':'&quot;'}[c]));
+
+function tabelaBarras(titulo, linhas, chave, valor, extra, rotulos) {
+  if (!linhas || !linhas.length) return `<div class="card"><h2>${titulo}</h2><div class="vazio">Sem dados no período.</div></div>`;
+  const max = Math.max(...linhas.map((l) => Number(l[valor]) || 0)) || 1;
+  const cabecalho = rotulos ? `<tr><th></th>${extra ? `<th class="num">${rotulos[0]}</th>` : ''}<th class="num">${rotulos[extra ? 1 : 0]}</th></tr>` : '';
+  const corpo = linhas.map((l) => `<tr>
+      <td style="width:100%"><div class="bar"><i style="width:${(Number(l[valor]) / max * 100).toFixed(1)}%"></i><span>${esc(l[chave])}</span></div></td>
+      ${extra ? `<td class="num">${n(l[extra])}</td>` : ''}
+      <td class="num">${n(l[valor])}</td>
+    </tr>`).join('');
+  return `<div class="card"><h2>${titulo}</h2><table>${cabecalho}${corpo}</table></div>`;
+}
+
+function serie(dados) {
+  if (!dados || dados.length < 2) return '<div class="card wide"><h2>Movimento por dia</h2><div class="vazio">Precisa de pelo menos dois dias de coleta.</div></div>';
+  const W = 1000, H = 260, P = 34;
+  const maxS = Math.max(...dados.map((d) => d.sessoes), 1);
+  const maxC = Math.max(...dados.map((d) => d.conversoes), 1);
+  const x = (i) => P + i * ((W - P * 2) / (dados.length - 1));
+  const y = (v, m) => H - P - (v / m) * (H - P * 2);
+  const linha = (campo, m) => dados.map((d, i) => `${i ? 'L' : 'M'}${x(i).toFixed(1)},${y(d[campo], m).toFixed(1)}`).join(' ');
+  const area = `${linha('sessoes', maxS)} L${x(dados.length - 1).toFixed(1)},${H - P} L${P},${H - P} Z`;
+  const rotulos = dados.map((d, i) => (i % Math.ceil(dados.length / 8) === 0
+    ? `<text x="${x(i).toFixed(1)}" y="${H - 10}" fill="#9CA3AF" font-size="11" font-family="monospace" text-anchor="middle">${d.dia.slice(8, 10)}/${d.dia.slice(5, 7)}</text>` : '')).join('');
+  const pontos = dados.map((d, i) => d.conversoes ? `<circle cx="${x(i).toFixed(1)}" cy="${y(d.conversoes, maxC).toFixed(1)}" r="4" fill="#10B981"/>` : '').join('');
+  return `<div class="card wide"><h2>Movimento por dia</h2>
+    <svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Sessões e conversões por dia">
+      <line x1="${P}" y1="${H - P}" x2="${W - P}" y2="${H - P}" stroke="#2A3450"/>
+      <path d="${area}" fill="rgba(0,212,255,.1)"/>
+      <path d="${linha('sessoes', maxS)}" fill="none" stroke="#00D4FF" stroke-width="2.5"/>
+      <path d="${linha('conversoes', maxC)}" fill="none" stroke="#10B981" stroke-width="2" stroke-dasharray="5 4"/>
+      ${pontos}${rotulos}
+    </svg>
+    <div class="legenda">— sessões (pico ${n(maxS)}) &nbsp;·&nbsp; - - conversões (pico ${n(maxC)})</div></div>`;
+}
+
+async function carregar(dias) {
+  document.getElementById('erro').innerHTML = '';
+  document.getElementById('carimbo').textContent = 'carregando…';
+  let d;
+  try {
+    const r = await fetch(`/api/stats?dias=${dias}`, { credentials: 'same-origin' });
+    d = await r.json();
+    if (d.erro) throw new Error(d.erro);
+  } catch (e) {
+    document.getElementById('erro').innerHTML = `<div class="erro"><b>Não consegui carregar.</b> ${esc(e.message)}<br>Verifique SUPABASE_URL e SUPABASE_SERVICE_ROLE_KEY nas variáveis do Pages e se a migration do schema <code>tracking</code> foi aplicada.</div>`;
+    document.getElementById('carimbo').textContent = 'falhou';
+    return;
+  }
+  const t = d.totais || {};
+  document.getElementById('kpis').innerHTML = [
+    ['Visitantes', n(t.visitantes)], ['Sessões', n(t.sessoes)], ['Pageviews', n(t.pageviews)],
+    ['Conversas iniciadas', n(t.conversoes)], ['Taxa de conversão', (t.taxa_conversao ?? 0) + '%'],
+  ].map(([l, v]) => `<div class="kpi"><div class="n">${v}</div><div class="l">${l}</div></div>`).join('');
+
+  const g = [];
+  g.push(serie(d.por_dia));
+  g.push(tabelaBarras('Campanhas e origens (por sessão)', (d.campanhas || []).map((c) => ({
+    rotulo: `${c.source} · ${c.medium}${c.conteudo ? ' · ' + c.conteudo : ''}`, sessoes: c.sessoes, conversoes: c.conversoes,
+  })), 'rotulo', 'sessoes', 'conversoes', ['conversas', 'sessões']));
+  g.push(tabelaBarras('Páginas mais vistas', d.paginas, 'caminho', 'total'));
+  g.push(tabelaBarras('Eventos', d.eventos, 'evento', 'total'));
+  g.push(tabelaBarras('Origem das conversas', d.origens, 'origem', 'total'));
+  g.push(tabelaBarras('Cidades', (d.geo_cidades || []).map((c) => ({ rotulo: `${c.cidade} ${c.regiao}`, sessoes: c.sessoes })), 'rotulo', 'sessoes'));
+  g.push(tabelaBarras('Países', d.geo_paises, 'pais', 'sessoes'));
+  g.push(tabelaBarras('Dispositivos', d.dispositivos, 'dispositivo', 'total'));
+  g.push(tabelaBarras('Navegadores', d.navegadores, 'navegador', 'total'));
+
+  const conv = d.ultimas_conversas || [];
+  g.push(`<div class="card wide"><h2>Últimas conversas iniciadas</h2>${conv.length ? `<table>
+    <tr><th>Quando</th><th>Origem</th><th>Campanha</th><th>Conteúdo</th><th>Cidade</th><th>Dispositivo</th></tr>
+    ${conv.map((c) => `<tr><td>${new Date(c.quando).toLocaleString('pt-BR')}</td><td><span class="tag">${esc(c.origem)}</span></td>
+      <td>${esc(c.campanha)}</td><td>${esc(c.conteudo)}</td><td>${esc(c.cidade)}${c.pais ? ' · ' + esc(c.pais) : ''}</td><td>${esc(c.dispositivo)}</td></tr>`).join('')}
+    </table>` : '<div class="vazio">Nenhuma conversa iniciada no período.</div>'}</div>`);
+
+  document.getElementById('grid').innerHTML = g.join('');
+  document.getElementById('carimbo').textContent = `período de ${d.periodo_dias} dias · atualizado ${new Date(d.gerado_em).toLocaleString('pt-BR')}`;
+}
+
+let diasAtual = 30;
+document.querySelectorAll('[data-dias]').forEach((b) => b.addEventListener('click', () => {
+  document.querySelectorAll('[data-dias]').forEach((x) => x.classList.remove('on'));
+  b.classList.add('on');
+  diasAtual = Number(b.dataset.dias);
+  carregar(diasAtual);
+}));
+document.getElementById('atualizar').addEventListener('click', () => carregar(diasAtual));
+carregar(diasAtual);
+</script>
+</body>
+</html>

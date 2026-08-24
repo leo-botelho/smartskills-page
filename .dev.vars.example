@@ -1,0 +1,32 @@
+# Copie para .dev.vars (desenvolvimento) e cadastre como secrets no Pages (produção).
+# NUNCA comitar o arquivo .dev.vars.
+
+# Supabase (Project Settings > API)
+SUPABASE_URL=https://xxxxxxxxxxxx.supabase.co
+SUPABASE_SERVICE_ROLE_KEY=ey...            # service_role: só no servidor, nunca no navegador
+
+# Sal do hash de IP. Qualquer string longa e secreta. Trocar invalida os hashes antigos.
+IP_SALT=troque-por-uma-string-longa-e-aleatoria
+
+# Painel /dashboard.html
+PAINEL_USUARIO=raquel
+PAINEL_SENHA=troque-esta-senha
+
+# Guardar o IP bruto além do hash (LGPD: ver TRACKING.md). true | false
+ARMAZENAR_IP_BRUTO=true
+
+# Cookie em todos os subdomínios (opcional): .smartskillshub.com.br
+COOKIE_DOMINIO=
+
+# Geolocalização por API própria (opcional). Só é usada se a Cloudflare não resolver.
+# GEO_API_URL=https://geo.suaempresa.com/lookup/{ip}
+# GEO_API_TOKEN=
+
+# Destinos server-side (opcionais). Sem estas variáveis, nada é enviado para fora.
+# GA4_MEASUREMENT_ID=G-XXXXXXXXXX
+# GA4_API_SECRET=
+# META_PIXEL_ID=
+# META_CAPI_TOKEN=
+# META_TEST_EVENT_CODE=
+# WEBHOOK_URL=https://webhook.smartskillshub.com.br/webhook/conversao
+# WEBHOOK_TOKEN=

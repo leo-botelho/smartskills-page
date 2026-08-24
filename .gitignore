@@ -1,10 +1,4 @@
-# Ignora tudo neste repositório raiz (monorepo local)
-# O smartskills-page só deve conter estas páginas
-*
-!.gitignore
-!index.html
-!privacidade.html
-!termos.html
-!exclusao-dados.html
-!posts_prontos_agosto.html
-!calendario_aprovacao_agosto.html
+node_modules/
+.dev.vars
+.wrangler/
+.claude/

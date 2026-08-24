@@ -1,0 +1,7 @@
+{
+  // Uso LOCAL apenas (wrangler pages dev). Sem "pages_build_output_dir" de propósito:
+  // com essa chave, o arquivo viraria a fonte da verdade e sobrescreveria a configuração
+  // do projeto no painel da Cloudflare. A configuração de produção continua no painel.
+  "name": "smartskills-page",
+  "compatibility_date": "2026-08-23"
+}
