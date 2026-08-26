@@ -52,7 +52,8 @@ if (waBtn) {
   const origem = new URLSearchParams(location.search).get('origem') || 'home';
   waBtn.href = 'https://wa.me/5521971919691?text=' + encodeURIComponent(msgs[origem] || msgs.home);
   waBtn.addEventListener('click', () => {
-    if (typeof window.ssTrack === 'function') window.ssTrack('whatsapp_click', { origem, destino: 'wa.me' });
+    // O whatsapp_click já é disparado pelo track.js (o href aponta para wa.me).
+    // Chamar ssTrack aqui contaria a mesma conversão duas vezes.
     if (typeof gtag === 'function') gtag('event', 'whatsapp_click', { origem });
     if (typeof fbq === 'function') fbq('track', 'Contact', { origem });
     if (window.dataLayer) window.dataLayer.push({ event: 'whatsapp_click', origem });

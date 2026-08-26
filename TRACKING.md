@@ -38,6 +38,49 @@ assets/track.js            functions/api/collect.js              schema tracking
 | `dashboard.html` | Painel |
 | `_routes.json` | As funções só rodam em `/api/*` e `/dashboard*`; o resto é estático puro |
 
+## Inventário de eventos
+
+### Disparados no navegador (`assets/track.js`)
+
+O navegador só informa que algo aconteceu. Ele não coleta IP, user agent nem localização: isso é preenchido pelo servidor em cima da mesma requisição.
+
+| Evento | Quando dispara | Conversão | Extras enviados |
+|--------|----------------|-----------|-----------------|
+| `pageview` | toda página carregada | não | — |
+| `scroll_50` | 50% da página rolada, uma vez por página | não | — |
+| `scroll_90` | 90% da página rolada, uma vez por página | não | — |
+| `tempo_30s` | 30 segundos na mesma página | não | — |
+| `whatsapp_click` | clique em link `wa.me`, `api.whatsapp.com` ou `whatsapp.html` | **sim** | `href` |
+| `email_click` | clique em link `mailto:` | **sim** | `href` |
+| `clique_externo` | clique em link para outro domínio | não | `href` |
+| nome livre | qualquer elemento com `data-track="nome"` | conforme a lista | `texto`, `href` |
+
+Evento manual em qualquer ponto: `window.ssTrack('nome_do_evento', { chave: 'valor' })`.
+
+### Gerados no servidor
+
+| Evento | Origem | Observação |
+|--------|--------|------------|
+| `diagnostico` | `/api/diag` | marcado como bot, fica fora das métricas do painel |
+| qualquer | `GET /api/collect?evento=...` | pixel de imagem para contexto sem JavaScript (e-mail, por exemplo); hoje sem uso no site |
+
+### O que o servidor acrescenta a todo evento
+
+IP e hash do IP · user agent, navegador, sistema, tipo de dispositivo, detecção de bot · país, região, cidade, CEP, latitude, longitude, fuso, continente, ASN, operadora e datacenter · identificadores de visitante e sessão (cookies) · `fbc` quando a visita veio de anúncio da Meta · caminho, referrer e domínio de origem · UTMs e click ids lidos da URL.
+
+### Conversões
+
+Declaradas em `functions/api/collect.js`: `whatsapp_click`, `email_click`, `form_submit`, `demo_agendada`.
+As duas últimas ainda não são disparadas por nada — ficam prontas para quando existir formulário ou agendamento no site.
+
+### Encaminhamento para fora
+
+| Destino | Recebe | Condição |
+|---------|--------|----------|
+| GA4 (Measurement Protocol) | **todos** os eventos, com o mesmo nome | `GA4_MEASUREMENT_ID` + `GA4_API_SECRET` |
+| Meta (Conversions API) | **só conversões**; `whatsapp_click` vira `Contact` | `META_PIXEL_ID` + `META_CAPI_TOKEN` |
+| Webhook (n8n) | só conversões por padrão | `WEBHOOK_URL`; mude `WEBHOOK_SO_CONVERSOES=false` para receber tudo |
+
 ## Instalação
 
 ### 1. Supabase
