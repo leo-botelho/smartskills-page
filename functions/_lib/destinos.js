@@ -26,6 +26,8 @@ async function ga4(env, e) {
           medium: e.utm_medium,
           content: e.utm_content,
           origem: e.origem,
+          external_id: e.external_id,
+          gclid: e.gclid,
           engagement_time_msec: 1,
         },
       }],
@@ -41,7 +43,11 @@ async function metaCapi(env, e) {
   const user_data = {
     client_ip_address: e.ip || undefined,
     client_user_agent: e.user_agent || undefined,
-    external_id: await sha256Hex(e.visitante_id),
+    // O protocolo é o identificador que também viaja na conversa do WhatsApp,
+    // então serve para casar conversão online e fechamento offline depois.
+    external_id: e.external_id
+      ? [await sha256Hex(e.external_id), await sha256Hex(e.visitante_id)]
+      : await sha256Hex(e.visitante_id),
   };
   if (e.cidade) user_data.ct = await sha256Hex(e.cidade);
   if (e.pais) user_data.country = await sha256Hex(e.pais);
@@ -60,7 +66,7 @@ async function metaCapi(env, e) {
         event_source_url: e.url,
         action_source: 'website',
         user_data,
-        custom_data: { origem: e.origem, campanha: e.utm_campaign, conteudo: e.utm_content },
+        custom_data: { origem: e.origem, campanha: e.utm_campaign, conteudo: e.utm_content, protocolo: e.external_id },
       }],
       ...(env.META_TEST_EVENT_CODE ? { test_event_code: env.META_TEST_EVENT_CODE } : {}),
     }),

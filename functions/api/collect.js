@@ -6,11 +6,17 @@ import { resolverGeo } from '../_lib/geo.js';
 import { lerUA } from '../_lib/ua.js';
 import { inserir } from '../_lib/supabase.js';
 import { encaminharDestinos } from '../_lib/destinos.js';
+import { resolverAtribuicao } from '../_lib/atribuicao.js';
 
 const COOKIE_VISITANTE = 'ssh_vid';
 const COOKIE_SESSAO = 'ssh_sid';
-const COOKIE_FBC = 'ssh_fbc';   // guarda o clique de anúncio da Meta entre páginas
+const COOKIE_FBC = 'ssh_fbc';   // clique de anúncio da Meta
+const COOKIE_EID = 'ssh_eid';   // protocolo do visitante (legível pelo site, vai na mensagem do WhatsApp)
+const COOKIE_UTM = 'ssh_utm';   // atribuição da visita, para não se perder nas páginas seguintes
+const COOKIE_GCLID = 'ssh_gclid';
 const FBC_DIAS = 90;
+const ATRIBUICAO_DIAS = 90;
+const EID_DIAS = 365;
 const SESSAO_MIN = 30;              // sessão expira com 30 min de inatividade
 const VISITANTE_DIAS = 365;
 const CONVERSOES = new Set(['whatsapp_click', 'email_click', 'form_submit', 'demo_agendada']);
@@ -29,15 +35,17 @@ function lerCookies(request) {
   return out;
 }
 
-function cookie(nome, valor, maxAgeSeg, dominio) {
+function cookie(nome, valor, maxAgeSeg, dominio, legivelPeloSite = false) {
   const p = [
-    `${nome}=${valor}`,
+    `${nome}=${encodeURIComponent(valor)}`,
     'Path=/',
     'Secure',
-    'HttpOnly',
     'SameSite=Lax',
     `Max-Age=${maxAgeSeg}`,
   ];
+  // O protocolo é o único cookie legível por script: o site precisa dele para
+  // montar o link do WhatsApp. Os demais seguem HttpOnly.
+  if (!legivelPeloSite) p.push('HttpOnly');
   if (dominio) p.push(`Domain=${dominio}`);
   return p.join('; ');
 }
@@ -48,6 +56,13 @@ async function sha256(texto) {
 }
 
 const EHUUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+const EHCODIGO = /^[1-9][0-9]{8}$/;   // 9 dígitos, sem começar com zero
+
+/** Protocolo do visitante: 9 dígitos, curto o bastante para caber numa mensagem. */
+function novoCodigo() {
+  const b = crypto.getRandomValues(new Uint32Array(1))[0];
+  return String(100000000 + (b % 900000000));
+}
 
 function host(u) {
   try { return new URL(u).hostname.replace(/^www\./, ''); } catch { return null; }
@@ -82,6 +97,15 @@ export async function onRequestPost(ctx) {
   const sessaoNova = !sessao;
   if (!sessao) sessao = uuid();
 
+  // Protocolo do visitante. O navegador pode sugerir um na primeira visita (assim o
+  // link do WhatsApp já sai com o código sem esperar resposta); o servidor valida.
+  let codigo = EHCODIGO.test(cookies[COOKIE_EID] || '') ? cookies[COOKIE_EID] : null;
+  const codigoNovo = !codigo;
+  if (!codigo) {
+    const sugerido = String(corpo.external_id || '');
+    codigo = EHCODIGO.test(sugerido) ? sugerido : novoCodigo();
+  }
+
   // ── enriquecimento no servidor ────────────────────────────────────────
   const ip = request.headers.get('cf-connecting-ip')
           || request.headers.get('x-forwarded-for')?.split(',')[0].trim()
@@ -103,6 +127,25 @@ export async function onRequestPost(ctx) {
   const q = (() => { try { return new URL(url).searchParams; } catch { return new URLSearchParams(); } })();
   const p = (k) => corta(corpo[k] ?? q.get(k), 255);
 
+  // Click ids: guardados em campo próprio e mantidos entre páginas.
+  const gclidUrl = corta(corpo.gclid ?? q.get('gclid') ?? q.get('wbraid') ?? q.get('gbraid'), 255);
+  const gclid = gclidUrl || cookies[COOKIE_GCLID] || null;
+  const fbclid = corta(corpo.fbclid ?? q.get('fbclid'), 255);
+
+  // Atribuição: a URL manda; sem UTM, vale o que já estava guardado; sem isso, o referrer.
+  let utmGuardadas = null;
+  try { utmGuardadas = cookies[COOKIE_UTM] ? JSON.parse(cookies[COOKIE_UTM]) : null; } catch { utmGuardadas = null; }
+  const atrib = resolverAtribuicao({
+    daUrl: {
+      utm_source: p('utm_source'), utm_medium: p('utm_medium'), utm_campaign: p('utm_campaign'),
+      utm_content: p('utm_content'), utm_term: p('utm_term'),
+    },
+    doCookie: utmGuardadas,
+    referrerHost: host(ref),
+    hostDoSite: alvo.hostname,
+    temClickId: !!(gclidUrl || fbclid),
+  });
+
   const linha = {
     ocorrido_em: corpo.ts ? new Date(corpo.ts).toISOString() : new Date().toISOString(),
     visitante_id: visitante,
@@ -119,13 +162,16 @@ export async function onRequestPost(ctx) {
     referrer: ref,
     referrer_host: host(ref),
 
+    external_id: codigo,
     origem: p('origem'),
-    utm_source: p('utm_source'),
-    utm_medium: p('utm_medium'),
-    utm_campaign: p('utm_campaign'),
-    utm_content: p('utm_content'),
-    utm_term: p('utm_term'),
-    click_id: corta(corpo.click_id ?? q.get('gclid') ?? q.get('fbclid') ?? q.get('ttclid'), 255),
+    utm_source: atrib.utm_source,
+    utm_medium: atrib.utm_medium,
+    utm_campaign: atrib.utm_campaign,
+    utm_content: atrib.utm_content,
+    utm_term: atrib.utm_term,
+    gclid,
+    fbclid,
+    click_id: corta(corpo.click_id ?? gclid ?? fbclid ?? q.get('ttclid'), 255),
 
     ip: guardarIpBruto ? ip : null,
     ip_hash: ipHash,
@@ -164,7 +210,17 @@ export async function onRequestPost(ctx) {
   headers.append('set-cookie', cookie(COOKIE_VISITANTE, visitante, VISITANTE_DIAS * 86400, dominio));
   headers.append('set-cookie', cookie(COOKIE_SESSAO, sessao, SESSAO_MIN * 60, dominio));
   if (fbcNovo) headers.append('set-cookie', cookie(COOKIE_FBC, fbc, FBC_DIAS * 86400, dominio));
-  return new Response(JSON.stringify({ ok: true }), { status: 202, headers });
+  if (codigoNovo) headers.append('set-cookie', cookie(COOKIE_EID, codigo, EID_DIAS * 86400, dominio, true));
+  if (gclidUrl) headers.append('set-cookie', cookie(COOKIE_GCLID, gclidUrl, FBC_DIAS * 86400, dominio));
+  if (atrib.novo) {
+    const guardar = {
+      utm_source: atrib.utm_source, utm_medium: atrib.utm_medium, utm_campaign: atrib.utm_campaign,
+      utm_content: atrib.utm_content, utm_term: atrib.utm_term,
+    };
+    headers.append('set-cookie', cookie(COOKIE_UTM, JSON.stringify(guardar), ATRIBUICAO_DIAS * 86400, dominio));
+  }
+  // Devolve o protocolo para o site poder usá-lo no link do WhatsApp.
+  return new Response(JSON.stringify({ ok: true, external_id: codigo }), { status: 202, headers });
 }
 
 // Fallback sem JavaScript: <img src="/api/collect?evento=pageview&...">

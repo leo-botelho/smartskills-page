@@ -92,18 +92,18 @@ def cta(title, text, origem):
     return f'''<section class="cta-final"><div class="section-label reveal" style="text-align:center">Próximo passo</div><h2 class="reveal">{title}</h2><p class="reveal">{text}</p>
 <div class="cta-actions reveal"><a href="{wa(origem)}" class="btn-primary" target="_blank" rel="noopener noreferrer">{WA_ICON}Falar no WhatsApp</a><a href="mailto:{MAIL}" class="btn-outline">{MAIL_ICON}Enviar e-mail</a></div></section>'''
 
-def page(fname, title, desc, body, mode=None, current=None, minimal=False):
+def page(fname, title, desc, body, mode=None, current=None, minimal=False, origem='home'):
     links = ''.join(f'<li><a href="{h}"{" aria-current=page" if h==current else ""}>{t}</a></li>' for h,t in NAV)
-    mlinks = ''.join(f'<a href="{h}">{t}</a>' for h,t in NAV) + f'<a href="{wa("home")}" target="_blank" rel="noopener noreferrer" style="color:var(--cyan)">Falar com especialista</a>'
+    mlinks = ''.join(f'<a href="{h}">{t}</a>' for h,t in NAV) + f'<a href="{wa(origem)}" target="_blank" rel="noopener noreferrer" style="color:var(--cyan)">Falar com especialista</a>'
     nav = '' if minimal else f'''<nav class="site-nav" aria-label="Navegação principal"><a class="nav-logo" href="index.html">{SYMBOL}<div class="nav-logo-text">SMART<span>SKILLS</span></div></a>
-<ul class="nav-links">{links}</ul><a href="{wa('home')}" class="nav-cta" target="_blank" rel="noopener noreferrer">Falar com especialista</a>
+<ul class="nav-links">{links}</ul><a href="{wa(origem)}" class="nav-cta" target="_blank" rel="noopener noreferrer">Falar com especialista</a>
 <button class="nav-hamburger" aria-label="Abrir menu" aria-expanded="false"><span></span><span></span><span></span></button></nav><div class="nav-mobile">{mlinks}</div>'''
     footer = '' if minimal else f'''<footer><div class="footer-brand"><a class="nav-logo" href="index.html">{SYMBOL.replace('width="32" height="32"','width="28" height="28"')}<div class="nav-logo-text" style="font-size:1rem">SMART<span>SKILLS</span></div></a><p>Plataformas, agentes de IA e automações para empresas de serviços.</p></div>
 <div class="footer-col"><h4>Serviços</h4><ul><li><a href="plataformas.html">Plataformas e Aplicativos</a></li><li><a href="agentes-de-ia.html">Agentes de IA</a></li><li><a href="automacoes.html">Automações</a></li></ul></div>
 <div class="footer-col"><h4>Empresa</h4><ul><li><a href="cases.html">Cases</a></li><li><a href="sobre.html">Sobre</a></li><li><a href="privacidade.html">Privacidade</a></li><li><a href="termos.html">Termos</a></li><li><a href="exclusao-dados.html">Exclusão de dados</a></li></ul></div>
 <div class="footer-col"><h4>Contato</h4><ul><li><a href="{WA}" target="_blank" rel="noopener noreferrer">{WA_ICON.replace('16','14')}{PHONE}</a></li><li><a href="mailto:{MAIL}">{MAIL_ICON.replace('16','14')}{MAIL}</a></li><li><a href="https://www.instagram.com/smartskills.hub" target="_blank" rel="noopener noreferrer">{IG_ICON.replace('18','14')}@smartskills.hub</a></li><li><a href="https://facebook.com/smartskillshubrj" target="_blank" rel="noopener noreferrer">{FB_ICON.replace('18','14')}smartskillshubrj</a></li></ul></div></footer>
 <div class="footer-bottom"><p>© 2026 Smart Skills Hub. Todos os direitos reservados.</p><div class="footer-socials"><a href="https://www.instagram.com/smartskills.hub" target="_blank" rel="noopener noreferrer" aria-label="Instagram">{IG_ICON}</a><a href="https://facebook.com/smartskillshubrj" target="_blank" rel="noopener noreferrer" aria-label="Facebook">{FB_ICON}</a><a href="{WA}" target="_blank" rel="noopener noreferrer" aria-label="WhatsApp">{WA_ICON.replace('16','18')}</a></div></div>
-<a class="wa-float" href="{wa('home')}" target="_blank" rel="noopener noreferrer" aria-label="Falar no WhatsApp"><div class="wa-float-label">Falar no WhatsApp</div>{WA_ICON.replace('width="16" height="16" ','')}</a>'''
+<a class="wa-float" href="{wa(origem)}" target="_blank" rel="noopener noreferrer" aria-label="Falar no WhatsApp"><div class="wa-float-label">Falar no WhatsApp</div>{WA_ICON.replace('width="16" height="16" ','')}</a>'''
     three = f'''<script type="importmap">{{"imports":{{"three":"https://unpkg.com/three@0.170.0/build/three.module.js"}}}}</script>
 <script type="module">import {{ mountScene }} from './assets/scene.js'; const m=document.querySelector('.scene-mount'); if(m) mountScene(m, '{mode}');</script>''' if mode else ''
     html = f'''<!DOCTYPE html>
@@ -162,7 +162,7 @@ home += section('Em produção','Onde isso <em>já está rodando</em>','Escopo e
  + gcard('Clínica veterinária','Vet Pop Ceilândia','Agente "Celina": recepção no WhatsApp, identificação da necessidade e agendamento de castração.','Agente em produção')
  + '</div><p class="reveal" style="margin-top:2rem"><a class="btn-secondary" href="cases.html">Ver todos os cases '+ARROW+'</a></p>')
 home += cta('Veja funcionando <em>para a sua empresa</em>','Demonstração gratuita de 20 minutos. Você traz o processo que mais consome a equipe, a gente mostra como ele fica.','home')
-page('index.html','Smart Skills Hub | Plataformas, agentes de IA e automações para empresas de serviços','Construímos sistemas e aplicativos, implantamos agentes de IA no WhatsApp e automatizamos processos para clínicas, serviços locais e franquias. Veja funcionando ao vivo.', home, mode='hero')
+page('index.html','Smart Skills Hub | Plataformas, agentes de IA e automações para empresas de serviços','Construímos sistemas e aplicativos, implantamos agentes de IA no WhatsApp e automatizamos processos para clínicas, serviços locais e franquias. Veja funcionando ao vivo.', home, mode='hero', origem='home')
 
 # ───────────────────────── PLATAFORMAS ─────────────────────────
 p = hero('Plataformas e aplicativos','A planilha virou gargalo.<br><em>Vira sistema.</em><br>Feito para a sua operação.',
@@ -205,7 +205,7 @@ p += section('Perguntas','O que costumam <em>perguntar antes</em>','',
       ('E se a minha equipe não adotar?','O treinamento faz parte da entrega e o sistema é desenhado a partir do processo que a equipe já faz, não de um ideal.'),
       ('Vocês ficam depois do lançamento?','Sim. A evolução contínua existe para isso: o sistema acompanha a operação conforme ela muda.')]), bg='bg-navy')
 p += cta('Traga o processo que mais <em>consome a sua equipe</em>','Em 20 minutos, mapeamos com você se ele pede um sistema, um agente ou uma automação. Sem proposta genérica.','plataformas')
-page('plataformas.html','Desenvolvimento de plataformas e aplicativos sob medida | Smart Skills Hub','SaaS, aplicativo, painel interno ou portal do cliente, construídos do diagnóstico ao deploy pela equipe que já colocou produtos em produção. Com IA embarcada quando faz sentido.', p, mode='layers', current='plataformas.html')
+page('plataformas.html','Desenvolvimento de plataformas e aplicativos sob medida | Smart Skills Hub','SaaS, aplicativo, painel interno ou portal do cliente, construídos do diagnóstico ao deploy pela equipe que já colocou produtos em produção. Com IA embarcada quando faz sentido.', p, mode='layers', current='plataformas.html', origem='plataformas')
 
 # ───────────────────────── AGENTES DE IA ─────────────────────────
 a = hero('Agente de IA · Atendimento automatizado','Seu cliente manda mensagem.<br><em>O agente responde.</em><br>24 horas por dia.',
@@ -245,7 +245,7 @@ a += section('Em produção','Agentes <em>que já atendem</em>','',
  + gcard('Clínica odontológica','Agente de atendimento · Click Odonto','Atendimento integrado ao ERP Click Gest.')
  + '</div>', bg='bg-navy')
 a += cta('Veja o agente funcionando <em>para a sua empresa</em>','Demonstração gratuita de 20 minutos. Mostramos o agente respondendo perguntas reais do seu segmento, ao vivo, sem script.','agentes')
-page('agentes-de-ia.html','Agente de IA para atendimento 24h no WhatsApp | Smart Skills Hub','Agente de IA que atende seus clientes 24h no WhatsApp. Qualifica leads, agenda consultas, gera cobranças e contratos. Veja funcionando ao vivo.', a, current='agentes-de-ia.html')
+page('agentes-de-ia.html','Agente de IA para atendimento 24h no WhatsApp | Smart Skills Hub','Agente de IA que atende seus clientes 24h no WhatsApp. Qualifica leads, agenda consultas, gera cobranças e contratos. Veja funcionando ao vivo.', a, current='agentes-de-ia.html', origem='agentes')
 
 # ───────────────────────── AUTOMAÇÕES ─────────────────────────
 au = hero('Automações de processo','O que hoje é copiar e colar<br><em>vira rotina que roda sozinha.</em>',
@@ -276,7 +276,7 @@ au += section('Perguntas','O que costumam <em>perguntar antes</em>','',
       ('O que acontece quando dá erro?','O fluxo avisa. Nenhuma automação nossa falha em silêncio.'),
       ('Como é cobrado?','Projeto fechado por fluxo ou acompanhamento mensal de operação, conforme o volume.')]), bg='bg-navy')
 au += cta('Qual tarefa repetitiva <em>a sua equipe faz toda semana?</em>','Conta para a gente em 20 minutos. Saímos da conversa com o desenho do fluxo.','automacoes')
-page('automacoes.html','Automação de processos com n8n e integrações | Smart Skills Hub','Cobrança, CRM, notificações, planilhas e e-mail rodando sozinhos. Fluxos em n8n e APIs conectando os sistemas que a sua empresa já usa.', au, mode='graph', current='automacoes.html')
+page('automacoes.html','Automação de processos com n8n e integrações | Smart Skills Hub','Cobrança, CRM, notificações, planilhas e e-mail rodando sozinhos. Fluxos em n8n e APIs conectando os sistemas que a sua empresa já usa.', au, mode='graph', current='automacoes.html', origem='automacoes')
 
 # ───────────────────────── CASES ─────────────────────────
 c = hero('Em produção','O que construímos<br><em>e está rodando hoje</em>',
@@ -298,7 +298,7 @@ c += section('Projetos','Plataformas, agentes <em>e automações</em>','',
  + gcard('Automação · A nossa operação','Hub Smart Skills Hub','Agente no WhatsApp, fluxos n8n, nutrição no Mautic e rastreamento do funil. A mesma infraestrutura que entregamos.','Usamos o que vendemos',cat='auto')
  + '</div>', sid='lista')
 c += cta('Seu segmento <em>não está aqui?</em>','Os mecanismos são os mesmos. Na demonstração, mostramos como ficam no seu processo.','cases')
-page('cases.html','Cases: plataformas, agentes de IA e automações em produção | Smart Skills Hub','Projetos entregues para clínicas, pousadas, salões, escritórios contábeis e anfitriões. Escopo, mecanismo e integrações de cada um.', c, mode='particles', current='cases.html')
+page('cases.html','Cases: plataformas, agentes de IA e automações em produção | Smart Skills Hub','Projetos entregues para clínicas, pousadas, salões, escritórios contábeis e anfitriões. Escopo, mecanismo e integrações de cada um.', c, mode='particles', current='cases.html', origem='cases')
 
 # ───────────────────────── SOBRE ─────────────────────────
 s = hero('Sobre','Uma equipe de engenharia<br><em>que opera o que constrói</em>',
@@ -315,7 +315,7 @@ s += section('Infraestrutura','O que roda <em>na nossa casa</em>','A mesma infra
  '<div class="badges reveal">' + ''.join(f'<span class="int-badge">{b}</span>' for b in ['WhatsApp API','n8n','Mautic','Channel manager','Supabase','Next.js','Cloudflare']) + '</div>', bg='bg-navy')
 s += section('Onde estamos','Rio de Janeiro. <em>Atendimento em todo o Brasil.</em>','A implantação é remota e não exige visita presencial. A demonstração acontece por videochamada, com o seu caso na tela.','')
 s += cta('Fale com quem <em>vai construir</em>','Na demonstração, quem atende é da equipe de engenharia, não um vendedor com roteiro.','sobre')
-page('sobre.html','Sobre a Smart Skills Hub | Engenharia de produto, IA e automação','Equipe de engenharia que constrói plataformas, implanta agentes de IA e automatiza processos para empresas de serviços. Operamos o nosso próprio hub antes de levar ao cliente.', s, mode='hero', current='sobre.html')
+page('sobre.html','Sobre a Smart Skills Hub | Engenharia de produto, IA e automação','Equipe de engenharia que constrói plataformas, implanta agentes de IA e automatiza processos para empresas de serviços. Operamos o nosso próprio hub antes de levar ao cliente.', s, mode='hero', current='sobre.html', origem='sobre')
 
 # ───────────────────────── WHATSAPP (intermediária) ─────────────────────────
 w = f'''<section class="wa-page"><div class="hero-grid-bg"></div><div class="box">

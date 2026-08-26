@@ -148,8 +148,8 @@ async function carregar(dias) {
 
   const conv = d.ultimas_conversas || [];
   g.push(`<div class="card wide"><h2>Últimas conversas iniciadas</h2>${conv.length ? `<table>
-    <tr><th>Quando</th><th>Origem</th><th>Campanha</th><th>Conteúdo</th><th>Cidade</th><th>Dispositivo</th></tr>
-    ${conv.map((c) => `<tr><td>${new Date(c.quando).toLocaleString('pt-BR')}</td><td><span class="tag">${esc(c.origem)}</span></td>
+    <tr><th>Quando</th><th>Protocolo</th><th>Origem</th><th>Campanha</th><th>Conteúdo</th><th>Cidade</th><th>Dispositivo</th></tr>
+    ${conv.map((c) => `<tr><td>${new Date(c.quando).toLocaleString('pt-BR')}</td><td style="font-family:var(--mono);font-size:.78rem;color:var(--cyan)">${esc(c.codigo || '—')}</td><td><span class="tag">${esc(c.origem)}</span></td>
       <td>${esc(c.campanha)}</td><td>${esc(c.conteudo)}</td><td>${esc(c.cidade)}${c.pais ? ' · ' + esc(c.pais) : ''}</td><td>${esc(c.dispositivo)}</td></tr>`).join('')}
     </table>` : '<div class="vazio">Nenhuma conversa iniciada no período.</div>'}</div>`);
 

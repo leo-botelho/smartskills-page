@@ -66,7 +66,32 @@ Evento manual em qualquer ponto: `window.ssTrack('nome_do_evento', { chave: 'val
 
 ### O que o servidor acrescenta a todo evento
 
-IP e hash do IP · user agent, navegador, sistema, tipo de dispositivo, detecção de bot · país, região, cidade, CEP, latitude, longitude, fuso, continente, ASN, operadora e datacenter · identificadores de visitante e sessão (cookies) · `fbc` quando a visita veio de anúncio da Meta · caminho, referrer e domínio de origem · UTMs e click ids lidos da URL.
+IP e hash do IP · user agent, navegador, sistema, tipo de dispositivo, detecção de bot · país, região, cidade, CEP, latitude, longitude, fuso, continente, ASN, operadora e datacenter · identificadores de visitante e sessão (cookies) · **protocolo do visitante** (`external_id`) · `gclid` e `fbclid` em campos próprios, persistidos em cookie por 90 dias · `fbc` quando a visita veio de anúncio da Meta · caminho, referrer e domínio de origem · UTMs.
+
+### Protocolo do visitante (external_id)
+
+Código de 9 dígitos gerado na primeira visita e guardado por 1 ano no cookie `ssh_eid` (o único legível por script, porque o site precisa dele para montar o link). Ele:
+
+- viaja em **todo evento** gravado no Supabase;
+- entra **disfarçado na mensagem do WhatsApp**: "Olá. Quero ver uma demonstração… **[cod. 784975675]**";
+- vai à Meta como `external_id` (com hash) e ao GA4 como parâmetro.
+
+Quando o lead manda a mensagem, o código chega junto. Para ver a jornada dele no site, rode no Supabase:
+
+```sql
+select tracking.jornada('[cod. 784975675]');
+```
+
+Aceita o texto colado com colchetes. Devolve origem (UTMs, gclid, referrer), cidade, dispositivo, se converteu e a linha do tempo de páginas. É o elo entre a conversa no WhatsApp e a campanha que a gerou.
+
+### Atribuição: utm_source nunca fica vazia
+
+Regra aplicada no servidor (`functions/_lib/atribuicao.js`), adaptada do script de rastreio 4.0:
+
+1. UTM na URL (ou clique de anúncio com `gclid`/`fbclid`) inicia uma atribuição nova;
+2. sem UTM na URL, vale a atribuição guardada do visitante (cookie `ssh_utm`, 90 dias);
+3. sem cookie, o **referrer** vira a origem: buscadores → `organic`, redes sociais conhecidas → `social` (instagram, facebook, linkedin, youtube, tiktok, whatsapp…), outros sites → `referral`;
+4. sem nada, `direto/direto`.
 
 ### Conversões
 
