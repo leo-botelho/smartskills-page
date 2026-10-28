@@ -42,6 +42,7 @@ p { margin-bottom: 1rem; }
 ul, ol { padding-left: 1.4rem; margin-bottom: 1rem; }
 li { margin-bottom: .5rem; }
 strong { color: var(--white); }
+code { font-family: var(--mono); font-size: .82rem; color: var(--cyan); word-break: break-all; }
 .card {
   background: var(--navy); border: 1px solid var(--hairline); border-radius: 4px;
   padding: 1.5rem 1.75rem; margin: 1.5rem 0;
@@ -69,11 +70,11 @@ footer {
 <main>
   <div class="eyebrow">Legal</div>
   <h1>Exclusão de Dados do Usuário</h1>
-  <p class="updated">Última atualização: 01 de julho de 2026</p>
+  <p class="updated">Última atualização: 28 de outubro de 2026</p>
 
-  <p>Esta página descreve como o usuário pode solicitar a exclusão de seus dados pessoais coletados pela <strong>Smart Skills</strong> (CNPJ 30.355.563/0001-63) durante o atendimento via WhatsApp e outros canais digitais, em conformidade com a Lei Geral de Proteção de Dados (LGPD) e as políticas de plataforma da Meta para o WhatsApp Business.</p>
+  <p>Esta página descreve como o usuário pode solicitar a exclusão de seus dados pessoais coletados pela <strong>Smart Skills</strong> (CNPJ 30.355.563/0001-63) durante o atendimento via WhatsApp e outros canais digitais e pelo uso da plataforma FlowJob, em conformidade com a Lei Geral de Proteção de Dados (LGPD) e as políticas de plataforma da Meta para o WhatsApp Business.</p>
 
-  <h2>Como solicitar a exclusão dos seus dados</h2>
+  <h2>Se você conversou com o agente de IA</h2>
   <p>Você pode solicitar a exclusão completa dos seus dados pessoais de qualquer uma das seguintes formas:</p>
 
   <div class="card">
@@ -82,6 +83,21 @@ footer {
   <div class="card">
     <p style="margin-bottom:0"><span class="step-num">02</span><strong>Pelo próprio WhatsApp</strong> — envie a mensagem "Excluir meus dados" para o número de atendimento pelo qual você interagiu com o agente. Sua solicitação será encaminhada para processamento.</p>
   </div>
+
+  <h2>Se você usa o FlowJob (cliente)</h2>
+  <div class="card">
+    <p><span class="step-num">01</span><strong>Remover o aplicativo pela Meta</strong> — em Facebook → Configurações → Integrações de negócios, remova o aplicativo. A conexão do WhatsApp e o token de acesso são apagados automaticamente. Você receberá um código de confirmação, que pode ser consultado em <code>https://crm.smartskillshub.com.br/exclusao-de-dados?code=SEU_CODIGO</code>.</p>
+  </div>
+  <div class="card">
+    <p><span class="step-num">02</span><strong>Desconectar pelo FlowJob</strong> — em Configurações → WhatsApp, use "Redefinir Configuração".</p>
+  </div>
+  <div class="card">
+    <p style="margin-bottom:0"><span class="step-num">03</span><strong>Excluir a conta, contatos e conversas</strong> — envie o e-mail de "Solicitação de exclusão de dados" a partir do endereço cadastrado, para <a href="mailto:adm@smartskillshub.com.br?subject=Solicita%C3%A7%C3%A3o%20de%20exclus%C3%A3o%20de%20dados">adm@smartskillshub.com.br</a>. O prazo é o mesmo desta página (15 dias úteis).</p>
+  </div>
+
+  <h2>Se você é contato de um cliente do FlowJob</h2>
+  <p>Envie "Excluir meus dados" para o número com o qual conversou, ou use o e-mail desta página.</p>
+  <p>Nas conversas atendidas pelo FlowJob, a empresa que usa a plataforma é a controladora dos dados e a Smart Skills atua como operadora. Por isso, a exclusão das <strong>conversas de contatos</strong> de um cliente pode precisar passar primeiro por esse cliente (controlador), que decide sobre o tratamento desses dados.</p>
 
   <h2>O que é excluído</h2>
   <ul>
