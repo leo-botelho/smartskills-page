@@ -28,8 +28,18 @@ ICONS = {
  'bed': '<svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="#F59E0B" stroke-width="1.8" stroke-linecap="round"><path d="M2 4v16M2 8h18a2 2 0 0 1 2 2v10M2 17h20M6 8v9"/></svg>',
  'sheet': '<svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="#10B981" stroke-width="1.8" stroke-linecap="round"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M3 15h18M9 3v18"/></svg>',
  'mail': '<svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="#8B5CF6" stroke-width="1.8" stroke-linecap="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>',
+ 'chart': '<svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="#00D4FF" stroke-width="1.8" stroke-linecap="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>',
+ 'server': '<svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="#8B5CF6" stroke-width="1.8" stroke-linecap="round"><rect x="2" y="3" width="20" height="8" rx="2"/><rect x="2" y="13" width="20" height="8" rx="2"/><line x1="6" y1="7" x2="6.01" y2="7"/><line x1="6" y1="17" x2="6.01" y2="17"/></svg>',
+ 'pin': '<svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="#F59E0B" stroke-width="1.8" stroke-linecap="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>',
+ 'shield': '<svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="#10B981" stroke-width="1.8" stroke-linecap="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>',
+ 'target': '<svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="#00D4FF" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>',
+ 'code': '<svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="#8B5CF6" stroke-width="1.8" stroke-linecap="round"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>',
+ 'cursor': '<svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="#F59E0B" stroke-width="1.8" stroke-linecap="round"><path d="M3 3l7.07 16.97 2.51-7.39 7.39-2.51L3 3z"/></svg>',
+ 'globe': '<svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="#00D4FF" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>',
+ 'send': '<svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="#F59E0B" stroke-width="1.8" stroke-linecap="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>',
+ 'bolt': '<svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="#10B981" stroke-width="1.8" stroke-linecap="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>',
 }
-NAV = [('plataformas.html','Plataformas'),('agentes-de-ia.html','Agentes de IA'),('automacoes.html','Automações'),('cases.html','Cases'),('sobre.html','Sobre')]
+NAV = [('plataformas.html','Plataformas'),('agentes-de-ia.html','Agentes de IA'),('automacoes.html','Automações'),('data-tracking.html','Data tracking'),('cases.html','Cases'),('sobre.html','Sobre')]
 
 # Mensagem por origem: o agente recebe o contexto de onde a pessoa veio.
 MSG_WA = {
@@ -37,6 +47,7 @@ MSG_WA = {
     'plataformas': 'Olá. Quero conversar sobre o desenvolvimento de um sistema ou aplicativo para a minha empresa.',
     'agentes': 'Olá. Quero ver uma demonstração do agente de IA para o meu segmento.',
     'automacoes': 'Olá. Tenho um processo repetitivo que quero automatizar.',
+    'tracking': 'Olá. Quero entender como medir de onde vêm os clientes das minhas campanhas, inclusive no WhatsApp.',
     'cases': 'Olá. Vi os cases no site e quero saber como ficaria no meu segmento.',
     'sobre': 'Olá. Quero falar com a equipe da Smart Skills Hub.',
 }
@@ -74,7 +85,8 @@ def section(label, title, sub, body, bg='bg-deep', sid=''):
     return f'<section class="{bg}"{idattr}><div class="section-label reveal">{label}</div><div class="section-rule"></div><h2 class="section-title reveal">{title}</h2>{subhtml}{body}</section>'
 
 def card(span, icon, label, title, desc, foot='', extra=''):
-    col = {'clock':'cyan','cal':'cyan','layers':'cyan','link':'cyan','card':'cyan','chat':'violet','doc':'violet','phone':'violet','users':'violet','mail':'violet','flow':'amber','grid':'amber','bed':'amber','check':'green','cpu':'green','sheet':'green'}[icon]
+    col = {'clock':'cyan','cal':'cyan','layers':'cyan','link':'cyan','card':'cyan','chat':'violet','doc':'violet','phone':'violet','users':'violet','mail':'violet','flow':'amber','grid':'amber','bed':'amber','check':'green','cpu':'green','sheet':'green',
+           'chart':'cyan','target':'cyan','globe':'cyan','server':'violet','code':'violet','pin':'amber','cursor':'amber','send':'amber','shield':'green','bolt':'green'}[icon]
     ic = f'<div class="card-icon {col}">{ICONS[icon]}</div>'
     return f'<div class="bento-card span-{span}"><div>{ic}<div class="card-label">{label}</div><div class="card-title">{title}</div><div class="card-desc">{desc}</div>{extra}</div>{foot}</div>'
 
@@ -99,7 +111,7 @@ def page(fname, title, desc, body, mode=None, current=None, minimal=False, orige
 <ul class="nav-links">{links}</ul><a href="{wa(origem)}" class="nav-cta" target="_blank" rel="noopener noreferrer">Falar com especialista</a>
 <button class="nav-hamburger" aria-label="Abrir menu" aria-expanded="false"><span></span><span></span><span></span></button></nav><div class="nav-mobile">{mlinks}</div>'''
     footer = '' if minimal else f'''<footer><div class="footer-brand"><a class="nav-logo" href="index.html">{SYMBOL.replace('width="32" height="32"','width="28" height="28"')}<div class="nav-logo-text" style="font-size:1rem">SMART<span>SKILLS</span></div></a><p>Plataformas, agentes de IA e automações para empresas de serviços.</p></div>
-<div class="footer-col"><h4>Serviços</h4><ul><li><a href="plataformas.html">Plataformas e Aplicativos</a></li><li><a href="agentes-de-ia.html">Agentes de IA</a></li><li><a href="automacoes.html">Automações</a></li></ul></div>
+<div class="footer-col"><h4>Serviços</h4><ul><li><a href="plataformas.html">Plataformas e Aplicativos</a></li><li><a href="agentes-de-ia.html">Agentes de IA</a></li><li><a href="automacoes.html">Automações</a></li><li><a href="data-tracking.html">Data tracking</a></li></ul></div>
 <div class="footer-col"><h4>Empresa</h4><ul><li><a href="cases.html">Cases</a></li><li><a href="sobre.html">Sobre</a></li><li><a href="privacidade.html">Privacidade</a></li><li><a href="termos.html">Termos</a></li><li><a href="exclusao-dados.html">Exclusão de dados</a></li></ul></div>
 <div class="footer-col"><h4>Contato</h4><ul><li><a href="{WA}" target="_blank" rel="noopener noreferrer">{WA_ICON.replace('16','14')}{PHONE}</a></li><li><a href="mailto:{MAIL}">{MAIL_ICON.replace('16','14')}{MAIL}</a></li><li><a href="https://www.instagram.com/smartskills.hub" target="_blank" rel="noopener noreferrer">{IG_ICON.replace('18','14')}@smartskills.hub</a></li><li><a href="https://facebook.com/smartskillshubrj" target="_blank" rel="noopener noreferrer">{FB_ICON.replace('18','14')}smartskillshubrj</a></li></ul></div></footer>
 <div class="footer-bottom"><p>© 2026 Smart Skills Hub. Todos os direitos reservados.</p><div class="footer-socials"><a href="https://www.instagram.com/smartskills.hub" target="_blank" rel="noopener noreferrer" aria-label="Instagram">{IG_ICON}</a><a href="https://facebook.com/smartskillshubrj" target="_blank" rel="noopener noreferrer" aria-label="Facebook">{FB_ICON}</a><a href="{WA}" target="_blank" rel="noopener noreferrer" aria-label="WhatsApp">{WA_ICON.replace('16','18')}</a></div></div>
@@ -316,6 +328,138 @@ s += section('Infraestrutura','O que roda <em>na nossa casa</em>','A mesma infra
 s += section('Onde estamos','Rio de Janeiro. <em>Atendimento em todo o Brasil.</em>','A implantação é remota e não exige visita presencial. A demonstração acontece por videochamada, com o seu caso na tela.','')
 s += cta('Fale com quem <em>vai construir</em>','Na demonstração, quem atende é da equipe de engenharia, não um vendedor com roteiro.','sobre')
 page('sobre.html','Sobre a Smart Skills Hub | Engenharia de produto, IA e automação','Equipe de engenharia que constrói plataformas, implanta agentes de IA e automatiza processos para empresas de serviços. Operamos o nosso próprio hub antes de levar ao cliente.', s, mode='hero', current='sobre.html', origem='sobre')
+
+# ───────────────────────── DATA TRACKING ─────────────────────────
+def lista(itens):
+    return '<ul class="checklist">' + ''.join(f'<li>{i}</li>' for i in itens) + '</ul>'
+
+def spark():
+    return '<svg class="spark" viewBox="0 0 300 70" preserveAspectRatio="none" aria-hidden="true"><polyline points="0,58 30,50 60,54 90,38 120,42 150,26 180,32 210,18 240,24 270,10 300,14" fill="none" stroke="#00D4FF" stroke-width="2"/><polyline points="0,64 30,62 60,60 90,58 120,56 150,52 180,54 210,46 240,48 270,40 300,42" fill="none" stroke="#10B981" stroke-width="2" opacity=".8"/></svg>'
+
+JORNADA = '''<div class="mock" role="img" aria-label="Exemplo ilustrativo da jornada de um lead que chegou pelo código do WhatsApp">
+<div class="mock-bar"><i></i><i></i><i></i><span>Jornada do protocolo</span><span class="mock-tag">Exemplo ilustrativo</span></div>
+<div class="mock-body"><dl class="kv"><dt>Protocolo</dt><dd class="cy">[cod. 482916370]</dd><dt>Origem</dt><dd>instagram · cpc</dd><dt>Campanha</dt><dd>campanha-exemplo</dd><dt>Anúncio</dt><dd>criativo-01</dd><dt>Cidade</dt><dd>Rio de Janeiro · RJ</dd><dt>Dispositivo</dt><dd>celular</dd></dl>
+<ul class="timeline"><li>Visitou a página de vendas</li><li>Rolou 50% da página</li><li>Rolou 90% da página</li><li class="conv">Clicou no WhatsApp · conversão</li></ul></div></div>'''
+
+BOLHA = '''<div class="wa-bubble">Olá. Vi o anúncio e quero saber mais. <code>[cod. 482916370]</code><div class="msg-time">mensagem pré-preenchida pelo link</div></div>'''
+
+DASH = f'''<div class="mock" role="img" aria-label="Exemplo ilustrativo do dashboard de tracking, sem dados reais">
+<div class="mock-bar"><i></i><i></i><i></i><span>Dashboard · período à escolha</span><span class="mock-tag">Exemplo ilustrativo</span></div>
+<div class="mock-body"><div class="dash-kpis">{"".join(f'<div class="dash-kpi"><div class="bar" style="width:{w}%"></div><div class="l">{l}</div></div>' for l,w in [("Visitantes",62),("Sessões",70),("Pageviews",78),("Conversas iniciadas",40),("Taxa de conversão",34)])}</div>
+<div class="dash-grid"><div class="dash-card"><div class="l">Movimento por dia</div>{spark()}</div>
+<div class="dash-card"><div class="l">Campanhas e origens</div><ul class="bars">{"".join(f'<li><span class="t">{t}</span><span class="f" style="width:{w}%"></span></li>' for t,w in [("instagram · cpc",84),("google · cpc",66),("organic",48),("direto",30)])}</ul></div></div>
+<div class="dash-card" style="margin-top:.5rem"><div class="l">Últimas conversas iniciadas</div><div class="dash-row head"><span>Protocolo</span><span>Origem</span><span>Campanha</span><span>Cidade</span></div><div class="dash-row"><span class="cy">[cod. 482916370]</span><span>instagram</span><span>campanha-exemplo</span><span>Rio de Janeiro</span></div><div class="dash-row"><span class="cy">[cod. 719340256]</span><span>google</span><span>campanha-busca</span><span>Niterói</span></div></div></div></div>'''
+
+dt = hero('Data tracking',
+ 'Você investe em campanha.<br><em>Sabe qual conversa virou cliente?</em>',
+ 'Medimos o caminho completo, do clique no anúncio à conversa no WhatsApp e à venda, no navegador e no servidor. Com dashboard próprio e envio dos eventos para a Meta e o Google.',
+ 'tracking', scene('graph','Grafo de eventos · cena interativa'), ('#como','Ver o que medimos'), cls='hero-3d')
+dt += '''<section class="proof" aria-label="O que a medição entrega"><div class="proof-grid">
+<div class="proof-item reveal"><div class="proof-num">Web + servidor</div><div class="proof-label">Cada evento medido nos dois lados</div></div>
+<div class="proof-item reveal reveal-delay-1"><div class="proof-num">Meta e Google</div><div class="proof-label">Conversions API e GA4 pelo servidor</div></div>
+<div class="proof-item reveal reveal-delay-2"><div class="proof-num">WhatsApp</div><div class="proof-label">Código na conversa liga o lead ao anúncio</div></div>
+<div class="proof-item reveal reveal-delay-3"><div class="proof-num">Dashboard</div><div class="proof-label">Painel próprio, sem planilha</div></div></div></section>'''
+
+dt += section('O problema','O anúncio fica num painel, a conversa no WhatsApp,<br><em>a venda numa planilha</em>','Quando os três não se falam, a verba da campanha é decidida por impressão.',
+ '<div class="bento reveal">'
+ + card(4,'chat','Sem origem','O lead chega no WhatsApp e ninguém sabe de onde veio','Foi anúncio, busca, indicação ou a bio do Instagram? A conversa, sozinha, não diz. A campanha que trouxe o cliente não recebe o crédito.')
+ + card(4,'link','Dado perdido','O navegador esconde parte do caminho','Pixel de navegador depende de script de terceiro, e bloqueadores e restrições de cookie cortam parte do que ele enxergaria. Conversões deixam de chegar à plataforma de anúncios.')
+ + card(4,'grid','Dado solto','Anúncio, conversa e venda não se ligam','Cada ferramenta mostra um pedaço. Sem um identificador comum, ninguém responde qual campanha gerou a venda fechada.')
+ + '</div>')
+
+dt += section('Tracking web','Tudo o que acontece <em>no site e nas páginas</em>','Coleta no navegador, com o mínimo necessário. O que o navegador não deve coletar fica por conta do servidor.',
+ '<div class="bento reveal">'
+ + card(4,'cursor','Navegação','Visita, rolagem e tempo na página','Pageview em toda página, rolagem de 50% e de 90% e permanência de 30 segundos, uma vez por página.')
+ + card(4,'target','Cliques que importam','WhatsApp, e-mail, links e botões','Cliques em WhatsApp e e-mail viram conversão. Links externos, botões e formulários viram evento com nome e dados extras.')
+ + card(4,'link','Origem da visita','UTM, referrer, gclid e fbclid','A origem nunca fica vazia: sem UTM, o referrer vira origem (busca, rede social, site) e, sem nada, a visita é direta. Vale por 90 dias.')
+ + card(4,'pin','Local e dispositivo','Cidade, região, país e aparelho','Navegador, sistema, celular ou computador e localização aproximada, preenchidos no servidor. Bots ficam fora da métrica.')
+ + card(4,'code','Eventos do seu negócio','O que importa para a sua operação','Iniciou o checkout, abriu o simulador, assistiu à aula, pediu orçamento. Você define o nome e o que conta como conversão.')
+ + card(4,'chart','Sessão e jornada','Do primeiro clique à conversa','Visitante e sessão por cookie de primeira parte, página de entrada e de saída, duração e retorno. Quem volta mantém a origem original.')
+ + '</div><div class="badges reveal">' + ''.join(f'<span class="int-badge">{b}</span>' for b in ['Pageview','Rolagem','Tempo na página','Clique no WhatsApp','Clique em e-mail','Formulário','Botão','UTM','gclid','fbclid','Referrer','Evento personalizado','Conversão']) + '</div>', bg='bg-navy', sid='como')
+
+dt += section('Server-side','Medir pelo servidor <em>completa o que o navegador perde</em>','O evento nasce no navegador, mas é no servidor do seu domínio que ele ganha o dado confiável e segue para os destinos.',
+ '<div class="bento reveal">'
+ + card(6,'globe','Primeira parte','A coleta é do seu domínio e o cookie é seu','A medição não depende de script de terceiro. O cookie é de primeira parte, com HttpOnly e SameSite, e o identificador do visitante fica no seu domínio.')
+ + card(6,'server','Dado completo','O servidor preenche o que o navegador não deve coletar','IP, user agent, navegador, sistema, dispositivo, cidade, região, país, fuso e operadora são preenchidos na mesma requisição. Bots são marcados e saem das métricas.')
+ + card(6,'shield','Credenciais protegidas','Chaves e tokens nunca vão para a página','Chave do banco, token da Meta e segredo do GA4 ficam só no servidor. Nada disso aparece no código que o navegador recebe.')
+ + card(6,'bolt','Um ponto, vários destinos','Cada evento segue para o banco, a Meta, o GA4 e o webhook','Se um destino falha, a página e os outros destinos seguem funcionando. A medição nunca atrasa o carregamento.')
+ + '</div>', sid='servidor')
+
+dt += section('Meta, Google e automações','Os eventos <em>voltam para as plataformas de anúncio</em>','O servidor envia as conversões com os dados que melhoram a correspondência, para a campanha aprender com a conversa e a venda, não só com o clique.',
+ '<div class="bento reveal">'
+ + card(6,'send','Meta · Conversions API','Conversões enviadas do servidor, com identificadores protegidos','IP, user agent e identificadores com hash (SHA-256): protocolo do visitante, cidade, estado e país. Quando a visita veio de anúncio, o clique (fbc) vai junto, um dos dados que mais pesam na correspondência.')
+ + card(6,'check','Eventos padronizados','Nome padrão da Meta, dados da campanha anexados','O clique no WhatsApp vira o evento Contact. Lead, compra e outras etapas seguem o nome padrão, com campanha, anúncio e protocolo como dados personalizados.')
+ + card(4,'layers','Sem contar em dobro','Convive com o Pixel do navegador','Cada evento leva um identificador próprio. Se você mantém o Pixel, a Meta reconhece o mesmo evento e não conta duas vezes.')
+ + card(4,'cal','Validação antes de ir ao ar','Evento de teste no Gerenciador de Eventos','Antes da campanha rodar, conferimos cada conversão chegando à Meta com o código de teste.')
+ + card(4,'chart','Google Analytics 4 e Google Ads','GA4 pelo servidor e clique do Google guardado','Todos os eventos seguem para o GA4 com os mesmos nomes e UTMs. O gclid fica guardado por 90 dias para cruzar com as campanhas do Google Ads.')
+ + card(12,'flow','Webhook e automações','O evento dispara o resto da operação','Cada conversão pode acionar um fluxo em n8n: avisar a equipe, criar o contato no CRM, atualizar a planilha ou entrar na nutrição por e-mail.','','<div class="badges"><span class="int-badge">Meta Conversions API</span><span class="int-badge">Meta Pixel</span><span class="int-badge">GA4</span><span class="int-badge">Google Ads</span><span class="int-badge">n8n</span><span class="int-badge">Webhook</span><span class="int-badge">CRM</span><span class="int-badge">Google Sheets</span><span class="int-badge">Mautic</span></div>')
+ + '</div>', bg='bg-navy', sid='integracoes')
+
+dt += section('Tracking avançado para WhatsApp','Do anúncio à conversa, <em>com um código que não se perde</em>','Em muitos negócios a venda acontece no WhatsApp, onde o rastro normalmente termina. O protocolo do visitante continua o rastro dentro da conversa.',
+ '<div class="split reveal"><div>'
+ '<div class="stack">'
+ '<div class="step"><div class="step-num">01</div><div class="step-title">A origem é guardada</div><div class="step-desc">UTMs, clique de anúncio (gclid, fbclid) e referrer ficam no cookie de primeira parte por 90 dias, mesmo que a pessoa volte outro dia.</div></div>'
+ '<div class="step"><div class="step-num">02</div><div class="step-title">O link leva um código</div><div class="step-desc">Cada visitante recebe um protocolo de 9 dígitos. O link do WhatsApp abre com a mensagem pré-preenchida e o código no final.</div></div>'
+ '<div class="step"><div class="step-num">03</div><div class="step-title">A conversa chega com protocolo</div><div class="step-desc">Quando a pessoa envia a mensagem, o código vem junto. Com ele, a equipe vê a jornada: origem, campanha, anúncio, cidade, dispositivo e páginas vistas.</div></div>'
+ '<div class="step"><div class="step-num">04</div><div class="step-title">O clique volta para a campanha</div><div class="step-desc">A conversão segue para a Meta e o GA4 com o mesmo código (com hash). Assim, a conversa e o fechamento podem ser ligados ao anúncio.</div></div>'
+ '</div><p class="steps-note">→ Se a pessoa apagar o código, a origem continua registrada pelo clique. Só o protocolo se perde.</p></div>'
+ f'<div class="stack">{BOLHA}{JORNADA}</div></div>'
+ '<div class="bento reveal" style="margin-top:3rem">'
+ + card(4,'chat','Mensagem por origem','Cada campanha abre uma conversa diferente','Anúncio, página ou link da bio podem abrir o WhatsApp com uma mensagem própria. O atendimento, humano ou agente de IA, já sabe de onde a pessoa veio.')
+ + card(4,'bolt','Aviso na hora','Conversa iniciada dispara um alerta','Cada conversa iniciada pode acionar um webhook para a equipe, com origem, campanha e protocolo.')
+ + card(4,'target','Fechamento ligado à campanha','Julgue a campanha pelo cliente fechado','Com o protocolo, a venda fechada na conversa pode ser ligada de volta ao anúncio, não só o clique.')
+ + '</div>', bg='bg-deep', sid='whatsapp')
+
+dt += section('Dashboard','Um painel <em>que responde qual campanha trouxe a conversa</em>','Dashboard próprio, com acesso por login, alimentado em tempo real pelos eventos. Sem exportar planilha para ver o resultado.',
+ '<div class="split reveal"><div>'
+ + lista(['<b>Visitantes, sessões e pageviews</b> do período que você escolher.',
+          '<b>Conversas iniciadas e taxa de conversão</b>, dia a dia.',
+          '<b>Campanhas e origens</b> por sessão e por conversa, incluindo o anúncio (conteúdo da UTM).',
+          '<b>Páginas mais vistas</b> e <b>eventos</b> disparados.',
+          '<b>Cidades, países, dispositivos e navegadores</b> de quem chega.',
+          '<b>Últimas conversas iniciadas</b>, com protocolo, origem, campanha, cidade e aparelho.',
+          '<b>Consulta por protocolo</b>: o código que veio no WhatsApp devolve a jornada inteira da pessoa.'])
+ + '<p class="steps-note">→ O dado fica em banco PostgreSQL do projeto, então também alimenta outras ferramentas de BI.</p></div>'
+ f'<div>{DASH}</div></div>', bg='bg-navy', sid='dashboard')
+
+dt += section('Para quem','Uma medição, <em>dois jeitos de usar</em>','',
+ '<div class="who reveal">'
+ '<div class="who-card"><div class="card-label">Infoprodutores</div><h3>Lançamento, perpétuo e venda consultiva</h3><p class="card-desc">Para saber qual criativo, público e página geram lead e venda, e para a plataforma de anúncio aprender com a compra.</p>'
+ + lista(['<b>Origem de cada lead e venda</b>: campanha, criativo, público e página.',
+          '<b>Funil medido</b>: captura, página de vendas, clique no checkout e compra, com um evento em cada etapa.',
+          '<b>Compra e lead no servidor</b>: enviados à Meta e ao GA4 para a campanha otimizar pela venda, não só pelo clique.',
+          '<b>Plataforma de vendas conectada</b> por webhook, quando ela oferece, ao mesmo identificador.',
+          '<b>Venda no WhatsApp</b> (mentoria, high ticket, pré-venda): o protocolo liga a conversa ao anúncio.',
+          '<b>Leitura durante o lançamento</b>: painel por campanha e por dia para mexer na verba enquanto a janela está aberta.'])
+ + '</div>'
+ '<div class="who-card"><div class="card-label">Negócios locais</div><h3>Clínicas, salões, hospedagem e serviços locais</h3><p class="card-desc">Para saber qual anúncio, bairro e cidade trazem conversa no WhatsApp, e se ela vira agendamento ou reserva.</p>'
+ + lista(['<b>O WhatsApp como conversão</b>: clique no botão, conversa iniciada e protocolo registrados.',
+          '<b>Cidade, região e dispositivo</b> de quem chega, para ajustar a campanha local.',
+          '<b>Mensagem por campanha</b>, para a recepção ou o agente de IA saber de onde a pessoa veio.',
+          '<b>Aviso na hora</b> por webhook quando alguém clica para falar com você.',
+          '<b>Relatório simples para o dono</b>: conversas por campanha, sem planilha.',
+          '<b>Atendimento e medição na mesma linha</b>, quando o atendimento é feito por um <a class="inline-link" href="agentes-de-ia.html">agente de IA</a> nosso.'])
+ + '</div></div>')
+
+dt += section('Como entregamos','Medição pronta <em>antes da campanha rodar</em>','Campanha sem medição desperdiça os primeiros dias, justamente os que mais ensinam.',
+ steps([('Plano de medição','Mapeamos campanhas, páginas, canal de venda e o que conta como conversão. Definimos nomes de evento e UTMs padronizados para ninguém bagunçar o dado depois.'),('Instalação e integrações','Colocamos a coleta, o banco, o dashboard e as integrações com Meta, GA4 e webhooks. Testamos com conversão real e conferimos o evento chegando em cada destino.'),('Acompanhamento','Lemos o painel com você, ajustamos a medição quando o negócio muda e evitamos que o dado perca qualidade com o tempo.')],'O mesmo método que usamos para medir o nosso próprio funil.'), sid='entrega')
+
+dt += section('Privacidade','Dado pessoal <em>tratado com prazo e finalidade</em>','Medição exige cuidado com a LGPD. O que a coleta faz por padrão:',
+ '<div class="bento reveal">'
+ + card(4,'shield','IP protegido','Hash sempre, IP bruto só se necessário','O IP vira hash com sal. O valor bruto é opcional e apagado depois do prazo definido. Protocolo, cidade, estado e país vão à Meta com hash.')
+ + card(4,'cal','Retenção definida','Cada dado tem prazo para existir','Rotina de limpeza apaga o detalhe depois do prazo combinado, para o banco não virar arquivo morto de dado pessoal.')
+ + card(4,'doc','Texto igual à prática','A política de privacidade diz o que é coletado','Ajudamos a deixar o texto de privacidade e o canal de exclusão de dados iguais ao que de fato é coletado. Base legal e aviso de cookies dependem do negócio e são definidos com você.')
+ + '</div>', bg='bg-navy')
+
+dt += section('Perguntas','O que costumam <em>perguntar antes</em>','',
+ faq([('Preciso trocar meu site, meu checkout ou meu CRM?','Na maioria dos casos, não. O código de medição entra nas páginas que você já tem, e a plataforma de vendas ou o CRM entram por webhook ou API quando oferecem esse recurso. Onde o site não permite uma rota no próprio domínio, desenhamos a alternativa no plano de medição.'),
+      ('Isso substitui o Pixel e o Tag Manager?','Pode substituir ou complementar. A coleta própria é a base, e o servidor envia os eventos para a Meta e o GA4. Se você mantém o Pixel no navegador, o mesmo identificador de evento evita contar a conversão duas vezes.'),
+      ('Mede anúncio que abre direto no WhatsApp, sem passar por página?','Esse caminho não passa pelo seu site, então o link não leva o código do protocolo. Medimos o que a plataforma de anúncios e a conversa entregam e desenhamos, no plano de medição, o que dá para ligar à campanha. Para o código funcionar, o clique precisa sair de uma página ou link nosso: uma página do site, o link da bio ou uma página intermediária de WhatsApp.'),
+      ('Dá para medir 100% das conversas?','Nenhuma medição chega a 100%. Quem digita o número à mão ou apaga o código da mensagem fica sem protocolo, e nesses casos a origem registrada é a do clique. O trabalho é reduzir esse ponto cego, não esconder que ele existe.'),
+      ('É compatível com a LGPD?','A coleta é desenhada para isso: IP com hash, prazo de retenção, cookies de primeira parte e nenhum dado enviado a terceiros além dos destinos que você liga. A base legal, o aviso de cookies e a política de privacidade dependem do seu negócio, e ajudamos a deixar o texto igual ao que de fato é coletado.'),
+      ('Quanto custa e quanto tempo leva?','Depende de quantos canais, páginas e integrações entram. O escopo e o prazo saem do plano de medição, não de um chute. Dá para contratar como projeto fechado ou com acompanhamento mensal.')]), bg='bg-deep')
+dt += cta('Qual campanha você <em>não consegue ligar a um cliente?</em>','Em 20 minutos, mostramos o que dá para medir no seu caso, do clique ao WhatsApp. Sem proposta genérica.','tracking')
+page('data-tracking.html','Data tracking para infoprodutores e negócios locais | Smart Skills Hub','Tracking web e server-side, integração com Meta e Google, dashboard próprio e rastreamento avançado de campanha para WhatsApp, para infoprodutores e negócios locais.', dt, mode='graph', current='data-tracking.html', origem='tracking')
 
 # ───────────────────────── WHATSAPP (intermediária) ─────────────────────────
 w = f'''<section class="wa-page"><div class="hero-grid-bg"></div><div class="box">
